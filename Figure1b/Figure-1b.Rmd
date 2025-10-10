@@ -32,7 +32,7 @@ rownames(snp_dist_matrix) <- colnames(geno)
 colnames(snp_dist_matrix) <- colnames(geno)
 
 # Save matrix to file
-write.table(snp_dist_matrix, "snp_dist_binary_masked.txt", sep="\t", quote=FALSE, col.names=NA)
+write_csv(snp_dist_matrix, "snp_dist_binary_masked.csv")
 ```
 
 CREATING FIGURE FOR NESTED SPATIAL SCALE GENETIC DIVERSITY CHANGE
@@ -44,8 +44,9 @@ metadata <- read.csv("~/strains_r_input.csv")
 meta_subset <- metadata[metadata$Strain %in% rownames(snp_dist_matrix), ]
 
 # ---------------------------------------------
-#    Compute mean intra-site SNP distances    #
+#    Compute mean intra-site SNP distances    
 # ---------------------------------------------
+
 calculate_intra_site_diversity <- function(Site, snp_dist_matrix, metadata) {
   isolates_in_site <- metadata$Strain[metadata$Site == Site]
   
@@ -71,7 +72,7 @@ intra_site_diversity <- metadata %>%
 print(intra_site_diversity)
 
 # ---------------------------------------------
-#    Compute mean intra-tree SNP distances    #
+#    Compute mean intra-tree SNP distances    
 # ---------------------------------------------
 
 calculate_intra_tree_diversity <- function(site_tree, snp_dist_matrix, metadata) {
@@ -91,6 +92,7 @@ calculate_intra_tree_diversity <- function(site_tree, snp_dist_matrix, metadata)
 }
 
 # Create data frame of unique Site + Tree combinations
+
 intra_tree_diversity <- metadata %>%
   distinct(Site, Tree, site_tree) %>%
   rowwise() %>%
@@ -132,18 +134,20 @@ intra_tissue_diversity <- metadata %>%
   ungroup() %>%
   select(Site, Tree, Tissue, Intra_tissue_distance)
 
-#### Combine all distance measures for site, tree and tissue in excel ####
+#### Combine all distance measures for site, tree and tissue ####
 
-# Join tissue with tree diversity
+# Join tissue, tree, site by left_join
+
 final_SNP_distance <- intra_tissue_diversity %>%
   left_join(intra_tree_diversity, by = c("Site", "Tree")) %>%
   left_join(intra_site_diversity, by = "Site")
 
 # Ensure Tree is a factor ordered A1–A12
 final_SNP_distance$Tree <- factor(final_SNP_distance$Tree, levels = paste0("A", 1:12))
+
 ```
 
-Transform dataframe and plot 
+TRANSFORM DATA AND PLOT
 ```{r}
 # Reshape to long format
 long_df <- final_SNP_distance %>%
@@ -165,6 +169,7 @@ long_df$Level <- factor(long_df$Level, levels = c("Site", "Tree", "Tissue"))
 long_df <- long_df %>%
   mutate(Line_ID = paste(Tree, Tissue, sep = "_"))
 
+# Filter out sites that have less than 2 strains
 long_df <- long_df %>%
   filter(!Site %in% c("Matlock", "Marden park", "UK")) %>%
   filter(!is.na(Tree))
