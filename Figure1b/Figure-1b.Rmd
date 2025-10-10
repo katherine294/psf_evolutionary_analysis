@@ -1,18 +1,21 @@
 # This script generate the multi-scale figure from snippy output
-Calculate pairwise distance for intra-site diversity
 
+Load packages
 ```{r}
 library(readr)
 library(vcfR)
 library(ape)
 library(dplyr)
 library(ggplot2)
+```
 
-# Read in vcf file
-vcf <- read.vcfR("~/OneDrive - University of Birmingham/Genotype-phenotype paper/Data for figures/Section 3 - Genomic analysis/Phylogeny/Masked_core.vcf")
+Read in vcf file
+```{r}
+vcf <- read.vcfR("~/Masked_core.vcf")
 
 # Convert vcf to binary data matrix 
 geno <- extract.gt(vcf, element = "GT", as.numeric = TRUE) 
 geno[is.na(geno)] <- 0  # Replace missing genotypes with 0
 ```
 
+# Calculate pairwise distance for intra-site diversity
