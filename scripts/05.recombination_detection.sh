@@ -4,7 +4,7 @@
 #SBATCH --ntasks=12
 #SBATCH --mem=8G
 #SBATCH --nodes=1
-#SBATCH --output=slurm_logs/03_snippy_align_%j.out
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/03_snippy_align_%j.out
 
 set -euo pipefail
 
