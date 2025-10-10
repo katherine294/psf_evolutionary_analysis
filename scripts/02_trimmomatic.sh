@@ -16,6 +16,7 @@ module load Trimmomatic/0.39-Java-11
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
 DATADIR="$PROJECT_BASE/01.RawData"
 TRIMMED_DATA="$PROJECT_BASE/02.TrimmedReads"
+ADAPTOR_SEQ="$PROJECT_BASE/01.RawData/TruSeq2-PE.fa" #This file is saved in 
 
 mkdir -p "$TRIMMED_DATA" slurm_logs
 
