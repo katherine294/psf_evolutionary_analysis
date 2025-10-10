@@ -14,7 +14,7 @@ module load Gubbins/3.3.1-foss-2022a
 
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
 SNIPPY_OUTPUT="$PROJECT_BASE/snippy_output"
-RECOMB_DIR="$PROJECT_BASE/recombination"
+RECOMB_DIR="$PROJECT_BASE/phylogenetic_analysis/recombination"
 
 mkdir -p "$RECOMB_DIR"
 
