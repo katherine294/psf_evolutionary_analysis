@@ -47,9 +47,18 @@ if [[ ! -f "$BAM" ]]; then
   exit 1
 fi
 
-# Run mosdepth -------
+# --------------------------------------------------------------------------------
+# Run mosdepth 
+# --------------------------------------------------------------------------------
 
 echo "Running mosdepth for ${NAME}"
+
 mosdepth -t 4 -n -b 500 "$OUTPATH/${NAME}" "$BAM"
 
 echo "Mosdepth completed for ${NAME}"
+
+# -------------------------------------------------------------------------------
+# Generate summary dataframe from mosepth output with mosdepth_sum.py
+# -------------------------------------------------------------------------------
+
+
