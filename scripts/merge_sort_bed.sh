@@ -13,9 +13,9 @@ module load bear-apps/2023a
 module load BEDTools/2.31.1-GCC-12.3.0
 
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
-MGE_DIR="$PROJECT_BASE/Phylogenetic_Analysis/MGE"
-RECOMB_DIR="$PROJECT_BASE/Phylogenetic_Analysis/recombination"
-OUTPUT_DIR="$PROJECT_BASE/Phylogenetic_Analysis/masked_regions"
+MGE_DIR="$PROJECT_BASE/Phylogenetic_analysis/MGE"
+RECOMB_DIR="$PROJECT_BASE/Phylogenetic_analysis/recombination"
+OUTPUT_DIR="$PROJECT_BASE/Phylogenetic_analysis/masked_regions"
 
 mkdir -p "$OUTPUT_DIR"
 
