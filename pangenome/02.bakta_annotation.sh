@@ -13,9 +13,9 @@ module load bakta/1.9.4-foss-2022b
 module load PILER-CR/1.06-GCC-12.2.0
 
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
-ASSEMBLIES_DIR="$PROJECT_BASE/ "
-OUTPATH="$PROJECT_BASE/Annotated_assemblies"
+ASSEMBLIES_DIR="$PROJECT_BASE/Assemblies"
 BAKTA_DB="/rds/homes/k/kgh742/psf_wgs_project/bakta_database_full/db" # Download the bakta database prior to running this script https://github.com/oschwengers/bakta
+OUTPATH="$PROJECT_BASE/Annotated_assemblies"
 STRAIN_LIST="$PROJECT_BASE/Names.txt"
 
 mkdir -p "$OUTPATH"
