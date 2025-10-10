@@ -19,7 +19,7 @@ CONDA_ENV_PATH="/rds/homes/k/kgh742/psf_wgs_project/conda/kgh742_mosdepth"
 
 if [ ! -d "$CONDA_ENV_PATH" ]; then
   echo "Creating mosdepth environment..."
-  mamba create --yes --prefix "$CONDA_ENV_PATH" python=3.10 mosdepth
+    mamba create --yes --prefix "$CONDA_ENV_PATH" python=3.10 pandas
 fi
 
 mamba activate "$CONDA_ENV_PATH"
@@ -56,9 +56,4 @@ echo "Running mosdepth for ${NAME}"
 mosdepth -t 4 -n -b 500 "$OUTPATH/${NAME}" "$BAM"
 
 echo "Mosdepth completed for ${NAME}"
-
-# -------------------------------------------------------------------------------
-# Generate summary dataframe from mosepth output with mosdepth_sum.py
-# -------------------------------------------------------------------------------
-
 
