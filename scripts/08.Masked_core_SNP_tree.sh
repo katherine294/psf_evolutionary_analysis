@@ -3,7 +3,7 @@
 #SBATCH --time=24:00:00 # RAxML-NG can take a few horus depending on number of genomes
 #SBATCH --ntasks=14
 #SBATCH --nodes=1
-#SBATCH --output=slurm_logs/snippycore_masked_%j.out
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/snippycore_masked_%j.out
 
 set -euo pipefail
 
