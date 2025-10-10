@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --time=06:00:00
 #SBATCH --nodes=1
-#SBATCH --output=slurm_logs/01_download_fastqc_%j.out
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/01_download_fastqc_%j.out
 
 set -euo pipefail
 
