@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=mosdepth
-#SBATCH --array=1-169
+#SBATCH --array=1-124
 #SBATCH --ntasks=4
 #SBATCH --time=01:00:00
-#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/snippy_output/MOSDEPTH_RESULTS/slurmfiles/slurm-%A_%a.out
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/mosdepth_%j.out
 
 set -euo pipefail
 
@@ -24,19 +24,30 @@ fi
 
 mamba activate "$CONDA_ENV_PATH"
 
-INPATH="/rds/homes/k/kgh742/psf_wgs_project/snippy_output"
-OUTPATH="${INPATH}/MOSDEPTH_RESULTS"
-STRAIN_LIST="${INPATH}/Strains.txt"
+# Define paths
+PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
+INPATH="$PROJECT_BASE/snippy_output"
+OUTPATH="$PROJECT_BASE/Phylogenetic_analysis/MOSDEPTH_RESULTS"
+STRAIN_LIST="$PROJECT_BASE/Names.txt"
 
-mkdir -p "$OUTPATH/slurmfiles"
+mkdir -p "$OUTPATH"
 
+# Get strain name for the array index
 NAME=$(sed -n "${SLURM_ARRAY_TASK_ID}p" "$STRAIN_LIST")
+
+if [ -z "$NAME" ]; then
+  echo "No strain name found for SLURM_ARRAY_TASK_ID=${SLURM_ARRAY_TASK_ID}"
+  exit 1
+fi
+
 BAM="${INPATH}/${NAME}/snps.bam"
 
 if [[ ! -f "$BAM" ]]; then
   echo "ERROR: BAM not found for ${NAME}"
   exit 1
 fi
+
+# Run mosdepth -------
 
 echo "Running mosdepth for ${NAME}"
 mosdepth -t 4 -n -b 500 "$OUTPATH/${NAME}" "$BAM"
