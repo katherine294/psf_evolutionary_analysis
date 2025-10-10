@@ -80,7 +80,7 @@ calculate_intra_tree_diversity <- function(site_tree, snp_dist_matrix, metadata)
   # Keep only strains that exist in the SNP distance matrix
   isolates <- isolates[isolates %in% rownames(snp_dist_matrix)]
   
-  if (length(isolates) < 1) {
+  if (length(isolates) < 2) {
     return(NA)  # Not enough isolates to calculate distance
   }
   
@@ -135,11 +135,8 @@ intra_tissue_diversity <- metadata %>%
 #### Combine all distance measures for site, tree and tissue in excel ####
 
 # Join tissue with tree diversity
-combined <- intra_tissue_diversity %>%
-  left_join(intra_tree_diversity, by = c("Site", "Tree"))
-
-# Join with site diversity
-final_SNP_distance <- combined %>%
+final_SNP_distance <- intra_tissue_diversity %>%
+  left_join(intra_tree_diversity, by = c("Site", "Tree")) %>%
   left_join(intra_site_diversity, by = "Site")
 
 # Ensure Tree is a factor ordered A1–A12
@@ -168,9 +165,10 @@ long_df$Level <- factor(long_df$Level, levels = c("Site", "Tree", "Tissue"))
 long_df <- long_df %>%
   mutate(Line_ID = paste(Tree, Tissue, sep = "_"))
 
-long_df <- long_df %>% 
-  filter(!Site == "Matlock" & !Site == "Marden park" & !Site == "UK") %>%
-   filter(!is.na(Tree))
+long_df <- long_df %>%
+  filter(!Site %in% c("Matlock", "Marden park", "UK")) %>%
+  filter(!is.na(Tree))
+
 
 # Manual tree colour palette
 tree_colours <- c("#0055AAFF", "#00C19BFF", "#C40003FF", "#EAC862FF",
