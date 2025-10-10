@@ -4,6 +4,7 @@
 #SBATCH --ntasks=4
 #SBATCH --time=24:00:00
 #SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/spades_%A_%a.out
+#SBATCH --error=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/spades_%A_%a.err
 
 set -euo pipefail
 
