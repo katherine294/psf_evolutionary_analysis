@@ -1,4 +1,22 @@
-#### GENERATE AN UNMASKED CORE ALIGNMENT USING SNIPPY-CORE, FOR RECOMBINATION DETECTION ####
+#!/bin/bash
+#SBATCH --job-name=snippy_align
+#SBATCH --time=08:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=8G
+#SBATCH --nodes=1
+#SBATCH --output=slurm_logs/03_snippy_align_%j.out
+
+set -euo pipefail
+
+module purge
+module load bear-apps/2019b
+module load snippy/4.6.0-foss-2019b-Perl-5.30.0
+
+PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
+SNIPPY_OUTPUT="$PROJECT_BASE/snippy_output"
+REF_DIR="$PROJECT_BASE/reference_sequences"
+
+mkdir -p "$SNIPPY_OUTPUT" slurm_logs
 
 ALN_PREFIX="W163a3b1_core_genome_unmasked"
 STRAINS=$(cat Names.txt)
