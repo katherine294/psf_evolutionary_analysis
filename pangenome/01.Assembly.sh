@@ -12,7 +12,7 @@ module load bear-apps/2021b
 module load SPAdes/3.15.3-GCC-11.2.0
 
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
-TRIMMED_READS="$PROJECT_BASE/trimmed_files"
+TRIMMED_READS="$PROJECT_BASE/02.TrimmedReads"
 OUTPATH="$PROJECT_BASE/Assemblies"
 STRAIN_LIST="$PROJECT_BASE/Names.txt"
 
