@@ -17,7 +17,7 @@ library(tidyverse)
 
 Read in vcf file
 ```{r}
-vcf <- read.vcfR("~/Masked_core.vcf")
+vcf <- read.vcfR("~/W163a3b1_core_genome_masked.vcf")
 
 # Convert vcf to binary data matrix 
 geno <- extract.gt(vcf, element = "GT", as.numeric = TRUE) 
@@ -43,8 +43,9 @@ metadata <- read.csv("~/strains_r_input.csv")
 # Keep only strains that exist in the distance matrix
 meta_subset <- metadata[metadata$Strain %in% rownames(snp_dist_matrix), ]
 
-##### Mean intra-site SNP distances #####
-
+# ---------------------------------------------
+#    Compute mean intra-site SNP distances    #
+# ---------------------------------------------
 calculate_intra_site_diversity <- function(Site, snp_dist_matrix, metadata) {
   isolates_in_site <- metadata$Strain[metadata$Site == Site]
   
@@ -56,22 +57,22 @@ calculate_intra_site_diversity <- function(Site, snp_dist_matrix, metadata) {
   }
   
   sub_matrix <- snp_dist_matrix[isolates_in_site, isolates_in_site, drop=FALSE]
-  mean_distance <- mean(sub_matrix[upper.tri(sub_matrix)])  # Avoid self-comparisons
+  site_distance <- mean(sub_matrix[upper.tri(sub_matrix)])  # Avoid self-comparisons
   
-  return(mean_distance)
+  return(site_distance)
 }
 
 # Apply to all sites
 intra_site_diversity <- metadata %>%
   distinct(Site) %>%
   rowwise() %>%
-  mutate(mean_distance = calculate_intra_site_diversity(Site, snp_dist_matrix, metadata))
+  mutate(Intra_site_distance = calculate_intra_site_diversity(Site, snp_dist_matrix, metadata))
 
 print(intra_site_diversity)
 
-write_csv(intra_site_diversity, "~/intra_site_diversity.txt")
-
-##### Mean intra-tree SNP distances #####
+# ---------------------------------------------
+#    Compute mean intra-tree SNP distances    #
+# ---------------------------------------------
 
 calculate_intra_tree_diversity <- function(site_tree, snp_dist_matrix, metadata) {
   isolates <- metadata$Strain[metadata$site_tree == site_tree]
@@ -84,30 +85,29 @@ calculate_intra_tree_diversity <- function(site_tree, snp_dist_matrix, metadata)
   }
   
   sub_matrix <- snp_dist_matrix[isolates, isolates, drop=FALSE]
-  mean_distance <- mean(sub_matrix[upper.tri(sub_matrix)])  # Avoid self-self comparisons
+  tree_distance <- mean(sub_matrix[upper.tri(sub_matrix)])  # Avoid self-self comparisons
   
-  return(mean_distance)
+  return(tree_distance)
 }
 
 # Create data frame of unique Site + Tree combinations
 intra_tree_diversity <- metadata %>%
   distinct(Site, Tree, site_tree) %>%
   rowwise() %>%
-  mutate(Intra_tree_diversity = calculate_intra_tree_diversity(site_tree, snp_dist_matrix, metadata)) %>%
-  ungroup()
-
-# View the result
-print(intra_tree_diversity)
-write_csv(intra_tree_diversity, "~/intra-tree_diversity.csv")
+  mutate(Intra_tree_distance = calculate_intra_tree_diversity(site_tree, snp_dist_matrix, metadata)) %>%
+  ungroup() %>%
+  select(Site, Tree, Intra_tree_distance)
 
 
-######## Intra-tissue SNP distance #########
+# ---------------------------------------------
+#    Compute mean intra-tissue SNP distances    #
+# ---------------------------------------------
 
-# Step 1: Create new grouping column
+# Create new tissue grouping column
 metadata <- metadata %>%
   mutate(site_tree_tissue = paste(Site, Tree, Tissue, sep = "_"))
 
-# Step 2: Define the function to compute mean intra-group SNP distance
+# Define the function to compute mean intra-group SNP distance
 calculate_intra_group_diversity <- function(group_id, snp_dist_matrix, metadata) {
   isolates <- metadata$Strain[metadata$site_tree_tissue == group_id]
   
@@ -119,50 +119,46 @@ calculate_intra_group_diversity <- function(group_id, snp_dist_matrix, metadata)
   }
   
   sub_matrix <- snp_dist_matrix[isolates, isolates, drop = FALSE]
-  mean_distance <- mean(sub_matrix[upper.tri(sub_matrix)])
+  tissue_distance <- mean(sub_matrix[upper.tri(sub_matrix)])
   
-  return(mean_distance)
+  return(tissue_distance)
 }
 
-# Step 3: Apply to each site_tree_tissue group
+# Apply to each site_tree_tissue group
 intra_tissue_diversity <- metadata %>%
   distinct(Site, Tree, Tissue, site_tree_tissue) %>%
   rowwise() %>%
-  mutate(Intra_group_diversity = calculate_intra_group_diversity(site_tree_tissue, snp_dist_matrix, metadata)) %>%
-  ungroup()
-
-# Step 4: View results
-print(intra_group_diversity)
-write_csv(intra_tissue_diversity, "~/intra-tissue_diversity.csv")
+  mutate(Intra_tissue_distance = calculate_intra_group_diversity(site_tree_tissue, snp_dist_matrix, metadata)) %>%
+  ungroup() %>%
+  select(Site, Tree, Tissue, Intra_tissue_distance)
 
 #### Combine all distance measures for site, tree and tissue in excel ####
 
-df <- read_csv("~/OneDrive - University of Birmingham/Genotype-phenotype paper/Data for figures/Section 3 - Genomic analysis/Phylogeny/diversity_levels.csv")
+# Join tissue with tree diversity
+combined <- intra_tissue_diversity %>%
+  left_join(intra_tree_diversity, by = c("Site", "Tree"))
 
-# Structure should be as below:
-str(df) 
-#spc_tbl_ [61 × 6] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
-# $ Site                  : chr [1:61] "Cressbrook Dale" "Cressbrook Dale" "Cressbrook Dale" "Cressbrook Dale" ...
-# $ Tree                  : chr [1:61] "A1" "A1" "A1" "A1" ...
-# $ Tissue                : chr [1:61] "B2" "B2" "B3" "S1" ...
-# $ Intra tissue diversity: num [1:61] 1 NA NA NA 4 NA 5 NA NA NA ...
-# $ Intra tree diversity  : num [1:61] 14.5 14.5 14.5 14.5 14.5 ...
-# $ Intra site diversity  : num [1:61] 23.1 23.1 23.1 23.1 23.1 ...
+# Join with site diversity
+final_SNP_distance <- combined %>%
+  left_join(intra_site_diversity, by = "Site")
 
 # Ensure Tree is a factor ordered A1–A12
-df$Tree <- factor(df$Tree, levels = paste0("A", 1:12))
+final_SNP_distance$Tree <- factor(final_SNP_distance$Tree, levels = paste0("A", 1:12))
+```
 
+Transform dataframe and plot 
+```{r}
 # Reshape to long format
-long_df <- df %>%
+long_df <- final_SNP_distance %>%
   pivot_longer(
-    cols = c(`Intra tissue diversity`, `Intra tree diversity`, `Intra site diversity`),
+    cols = c(Intra_tissue_distance, Intra_tree_distance, Intra_site_distance),
     names_to = "Level",
     values_to = "SNP_Diversity"
   ) %>%
   mutate(Level = case_when(
-    Level == "Intra tissue diversity" ~ "Tissue",
-    Level == "Intra tree diversity" ~ "Tree",
-    Level == "Intra site diversity" ~ "Site"
+    Level == "Intra_tissue_distance" ~ "Tissue",
+    Level == "Intra_tree_distance" ~ "Tree",
+    Level == "Intra_site_distance" ~ "Site"
   ))
 
 # Ensure Level is ordered
@@ -172,38 +168,9 @@ long_df$Level <- factor(long_df$Level, levels = c("Site", "Tree", "Tissue"))
 long_df <- long_df %>%
   mutate(Line_ID = paste(Tree, Tissue, sep = "_"))
 
-long_df <- long_df %>% filter(!Site == "Matlock" & !Site == "Marden park")
-
-# Count number of strains per tissue
-tissue_counts <- meta_subset %>%
-  group_by(Site, Tree, Tissue) %>%
-  summarise(Strain_count = n(), .groups = "drop")
-
-long_df_tissue <- long_df %>% 
-  filter(Level == "Tissue") %>%
-  left_join(tissue_counts, by = c("Site", "Tree", "Tissue"))
-
-
-tree_counts <- meta_subset %>%
-  group_by(Site, Tree) %>%
-  summarise(Strain_count = n(), .groups = "drop")
-
-long_df_tree <- long_df %>% 
-  filter(Level == "Tree") %>%
-  left_join(tree_counts, by = c("Site", "Tree"))
-
-site_counts <- meta_subset %>%
-  group_by(Site) %>%
-  summarise(Strain_count = n(), .groups = "drop")
-
-long_df_site <- long_df %>% 
-  filter(Level == "Site") %>%
-  left_join(site_counts, by = "Site")
-
-combined <- bind_rows(long_df_tissue, long_df_tree, long_df_site) 
-
-combined <- combined %>%
-  mutate(Normalised_Diversity = SNP_Diversity / Strain_count)
+long_df <- long_df %>% 
+  filter(!Site == "Matlock" & !Site == "Marden park" & !Site == "UK") %>%
+   filter(!is.na(Tree))
 
 # Manual tree colour palette
 tree_colours <- c("#0055AAFF", "#00C19BFF", "#C40003FF", "#EAC862FF",
@@ -211,7 +178,7 @@ tree_colours <- c("#0055AAFF", "#00C19BFF", "#C40003FF", "#EAC862FF",
                   "#894FC6FF", "#007ED3FF")
 
 # Plot with all sites faceted
-ggplot(combined, aes(x = Level, y = Normalised_Diversity, group = Line_ID, color = Tree)) +
+ggplot(long_df, aes(x = Level, y = SNP_Diversity, group = Line_ID, color = Tree)) +
   geom_line(linewidth = 1) +
   geom_point() +
   facet_wrap(~ Site, scales = "free_y") +  # Add facets for each site
@@ -219,6 +186,5 @@ ggplot(combined, aes(x = Level, y = Normalised_Diversity, group = Line_ID, color
   labs(x = NULL, y = "SNP Diversity", title = "Divergence of SNP Diversity from Site → Tree → Tissue") +
   theme(legend.position = "right") +
   scale_color_manual(values = tree_colours)
-
 
 ```
