@@ -1,0 +1,187 @@
+Strain,WGS,Year,Month,Date,Site,Tree,site_tree,Tissue,Tissue_health,Source
+C130a3b1,Y,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,B1,Symptomatic,This study 
+C140a3b1,N,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,B1,Symptomatic,This study 
+C150a3b1,Y,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,B1,Symptomatic,This study 
+C170a3b3,Y,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,B3,Symptomatic,This study 
+C250a4b2,Y,2022,May,May-22,Cressbrook Dale,A4,Cressbrook Dale_A4,B2,Symptomatic,This study 
+C270a4b3,Y,2022,May,May-22,Cressbrook Dale,A4,Cressbrook Dale_A4,B3,Symptomatic,This study 
+C400a1s2,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,S2,Non-symptomatic,This study 
+C410a1s1,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,S1,Non-symptomatic,This study 
+C420a1s2,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,S2,Non-symptomatic,This study 
+C430a1s3,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,S3,Non-symptomatic,This study 
+C440a1s3,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,S3,Non-symptomatic,This study 
+C450a3s3,Y,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,S3,Non-symptomatic,This study 
+C50a1b2,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+C530a1b2,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+C540a1b2,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2 ,Symptomatic,This study 
+C550a1b2,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+C560a1b2,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+C60a1b2,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+C610a1b3,Y,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B3,Symptomatic,This study 
+C620a1b3,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B3,Symptomatic,This study 
+C630a3b1,Y,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,B1,Symptomatic,This study 
+C680a3b3,Y,2022,May,May-22,Cressbrook Dale,A3,Cressbrook Dale_A3,B3,Symptomatic,This study 
+C70a1b2,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+C80a1b2,N,2022,May,May-22,Cressbrook Dale,A1,Cressbrook Dale_A1,B2,Symptomatic,This study 
+CFBP5062,,1978,na,1978,Netherlands,na,Netherlands_na,na,Symptomatic,
+ICMP9129,,1986,na,1986,"Walcheren, Netherlands",na,"Walcheren, Netherlands_na",na,Symptomatic,
+ICMP9132,,1987,na,1987,"De Meern, Netherlands",na,"De Meern, Netherlands_na",na,Symptomatic,
+ICMPP7711,,1978,na,1978,Netherlands,na,Netherlands_na,na,Symptomatic,
+ICMPP7712,,na,na,,Netherlands,na,Netherlands_na,na,Symptomatic,
+IoMN10D5R22,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B5,Symptomatic,This study 
+IoMN11D5R32,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B5,Symptomatic,This study 
+IoMN12D5R42,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B5,Symptomatic,This study 
+IoMN14D1R21,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B1,Symptomatic,This study 
+IoMN15D1R31,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B1,Symptomatic,This study 
+IoMN16D1R51,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B1,Symptomatic,This study 
+IoMN17D2R11,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B2,Symptomatic,This study 
+IoMN18D2R21,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B2,Symptomatic,This study 
+IoMN19D2R31,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B2,Symptomatic,This study 
+IoMN20D2R41,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B2,Symptomatic,This study 
+IoMN21D3R11,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B3,Symptomatic,This study 
+IoMN22D3R21,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B3,Symptomatic,This study 
+IoMN24D3R41,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B3,Symptomatic,This study 
+IoMN25D4R11,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B4,Symptomatic,This study 
+IoMN26D4R21,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B4,Symptomatic,This study 
+IoMN27D4R31,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B4,Symptomatic,This study 
+IoMN28D4R41,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B4,Symptomatic,This study 
+IoMN29D5R1,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B5,Symptomatic,This study 
+IoMN2D1R22,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B1,Symptomatic,This study 
+IoMN30D5R21,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B5,Symptomatic,This study 
+IoMN3D1R32,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B1,Symptomatic,This study 
+IoMN4D1R42,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B1,Symptomatic,This study 
+IoMN7D4R12,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B4,Symptomatic,This study 
+IoMN8D4R22,Y,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B4,Symptomatic,This study 
+IoMN9D5R12,N,2023,May,23/05/2023,Isle of Mull,A1,Isle of Mull_A1,B5,Symptomatic,This study 
+L107A14,N,2022,February,Feb-22,Lathkill Dale,A14,Lathkill Dale_A14,B1,Symptomatic,This study 
+L115A14,N,2022,February,Feb-22,Lathkill Dale,A14,Lathkill Dale_A14,B1,Symptomatic,This study 
+L1167a1b3,N,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B3,Symptomatic,This study 
+L1177a5b1,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L1187a5b1,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L1197a5b1,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L1207a5b1,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,1B,Symptomatic,This study 
+L1217a1b4,Y,2022,September,,Lathkill Dale,A1,Lathkill Dale_A1,B4,Non-symptomatic,This study 
+L1227a1b4,Y,2022,September,,Lathkill Dale,A1,Lathkill Dale_A1,B4,Non-symptomatic,This study 
+L1247a1b4,N,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B4,Non-symptomatic,This study 
+L1267a7b2,N,2022,September,Sep-22,Lathkill Dale,A7,Lathkill Dale_A7,B2,Healthy,This study 
+L1277a1b6,Y,2022,September,,Lathkill Dale,A1,Lathkill Dale_A1,B6,Non-symptomatic,This study 
+L1287a1b6,N,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B6,Non-symptomatic,This study 
+L1307a1b5,N,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B5,Non-symptomatic,This study 
+L1317a1b5,N,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B5,Non-symptomatic,This study 
+L1327a1b5,Y,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B5,Non-symptomatic,This study 
+L1347a6b5,N,2022,September,Sep-22,Lathkill Dale,A6,Lathkill Dale_A6,B5,Non-symptomatic,This study 
+L1738a1b4,Y,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B4,Non-symptomatic,This study 
+L1768a4b4,Y,2022,September,Sep-22,Lathkill Dale,A4,Lathkill Dale_A4,B4,Non-symptomatic,This study 
+L1778a4b5,Y,2022,September,Sep-22,Lathkill Dale,A4,Lathkill Dale_A4,B5,Non-symptomatic,This study 
+L1818a6b4,Y,2022,September,Sep-22,Lathkill Dale,A6,Lathkill Dale_A6,B4,Non-symptomatic,This study 
+L1928a1b6,Y,2022,September,Sep-22,Lathkill Dale,A1,Lathkill Dale_A1,B6,Non-symptomatic,This study 
+L1958a2b6,Y,2022,September,Sep-22,Lathkill Dale,A2,Lathkill Dale_A2,B6,Non-symptomatic,This study 
+L1968a2b6,Y,2022,September,Sep-22,Lathkill Dale,A2,Lathkill Dale_A2,B6,Non-symptomatic,This study 
+L2008a3b4,Y,2022,September,Sep-22,Lathkill Dale,A3,Lathkill Dale_A3,B4,Non-symptomatic,This study 
+L2018a3b5,Y,2022,September,Sep-22,Lathkill Dale,A3,Lathkill Dale_A3,B5,Non-symptomatic,This study 
+L2028a3b6,N,2022,September,Sep-22,Lathkill Dale,A3,Lathkill Dale_A3,B6,Non-symptomatic,This study 
+L777a5b1,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L787a5b1,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L797a5b1,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L807a5b1,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B1,Symptomatic,This study 
+L817a5b2,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B2,Symptomatic,This study 
+L827a5b2,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B2,Symptomatic,This study 
+L837a5b2,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B2,Symptomatic,This study 
+L847a5b2,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B2,Symptomatic,This study 
+L857a5b2,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B2,Symptomatic,This study 
+L887a5b3,N,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B3,Symptomatic,This study 
+L898a5b2,Y,2022,September,Sep-22,Lathkill Dale,A5,Lathkill Dale_A5,B2,Symptomatic,This study 
+MardA1S4125,Y,2022,January,Jan-22,Marden park,A1,Marden park_A1,B1,Symptomatic,This study 
+MatA1109,Y,2022,February,Feb-22,Matlock,A1,Matlock_A1,B1,Symptomatic,This study 
+MatA1110,N,2022,February,Feb-22,Matlock,A1,Matlock_A1,B1,Symptomatic,This study 
+MatA1117,N,2022,February,Feb-22,Matlock,A1,Matlock_A1,B1,Symptomatic,This study 
+MatA2111,Y,2022,February,Feb-22,Matlock,A2,Matlock_A2,B1,Symptomatic,This study 
+MatA2122,Y,2022,February,Feb-22,Matlock,A2,Matlock_A2,B1,Symptomatic,This study 
+MatA2124,Y,2022,February,Feb-22,Matlock,A2,Matlock_A2,B1,Symptomatic,This study 
+NCPPB1006,Y,1961,na,1961,UK,A1,UK_A1,B1,Symptomatic,
+W10013a5b5,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B5,Non-symptomatic,This study 
+W1003a4b5,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B5,Non-symptomatic,This study 
+W10113a5b6,N,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B6,Non-symptomatic,This study 
+W1013a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W1013a4b6,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B6,Non-symptomatic,This study 
+W10213a5b6,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B6,Non-symptomatic,This study 
+W1023a4b6,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B6,Non-symptomatic,This study 
+W10313a5b6,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B6,Non-symptomatic,This study 
+W1033a4b6,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B6,Non-symptomatic,This study 
+W10413a5b6,N,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B6,Non-symptomatic,This study 
+W1043a5b6,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B6,Non-symptomatic,This study 
+W1053a5b6,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B6,Non-symptomatic,This study 
+W1063a7b2,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B2,Healthy,This study 
+W1073a7b2,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B2,Healthy,This study 
+W1083a7b2,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B2,Healthy,This study 
+W1093a7b2,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B2,Healthy,This study 
+W1103a7b2,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B2,Healthy,This study 
+W1113a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W1113a7b3,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B3,Healthy,This study 
+W1123a7b3,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B3,Healthy,This study 
+W1133a7b3,N,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B3,Healthy,This study 
+W113a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W1143a7b3,Y,2022,July ,Jul-22,Wytham Woods,A7,Wytham Woods_A7,B3,Healthy,This study 
+W1153a9b3,Y,2022,July ,Jul-22,Wytham Woods,A9,Wytham Woods_A9,B3,Healthy,This study 
+W1163a11b1,Y,2022,July ,Jul-22,Wytham Woods,A11,Wytham Woods_A11,B1,Healthy,This study 
+W1173a11b1,Y,2022,July ,Jul-22,Wytham Woods,A11,Wytham Woods_A11,B1,Healthy,This study 
+W1213a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W12913a12b2,Y,2022,July ,Jul-22,Wytham Woods,A12,Wytham Woods_A12,B2,Healthy,This study 
+W13013a12b2,Y,2022,July ,Jul-22,Wytham Woods,A12,Wytham Woods_A12,B2,Healthy,This study 
+W13113a12b2,N,2022,July ,Jul-22,Wytham Woods,A12,Wytham Woods_A12,B2,Healthy,This study 
+W1313a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W13a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W1413a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W1513a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W1613a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W163a3b1,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B1,Symptomatic,This study 
+W1713a1b3,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B3,Symptomatic,This study 
+W183a3b2,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B2,Symptomatic,This study 
+W1913a1b3,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B3,Symptomatic,This study 
+W193a3b2,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B2,Symptomatic,This study 
+W2013a1b3,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B3,Symptomatic,This study 
+W203a3b2,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B2,Symptomatic,This study 
+W2113a1b3,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B3,Symptomatic,This study 
+W213a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W2313a1b3,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B3,Symptomatic,This study 
+W2413a1b3,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B3,Symptomatic,This study 
+W273a3b5,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B5,Non-symptomatic,This study 
+W313a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W323a3b6,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B6,Non-symptomatic,This study 
+W343a4b1,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B1,Symptomatic,This study 
+W413a4b3,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B3,Symptomatic,This study 
+W423a4b3,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B3,Symptomatic,This study 
+W433a4b3,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B3,Symptomatic,This study 
+W43a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W513a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W573a5b1,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B1,Symptomatic,This study 
+W583a5b1,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B1,Symptomatic,This study 
+W593a5b1,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B1,Symptomatic,This study 
+W603a5b1,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B1,Symptomatic,This study 
+W613a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W6913a4b2,Y,2022,July,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B2,Symptomatic,This study 
+W703a5b4,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B4,Symptomatic,This study 
+W7113a4b2,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B2,Symptomatic,This study 
+W7213a4b2,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B2,Symptomatic,This study 
+W723a5b4,Y,2022,July,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B4,Non-symptomatic,This study 
+W803a11b1,Y,2022,July ,Jul-22,Wytham Woods,A11,Wytham Woods_A11,B1,Healthy,This study 
+W813a1b1,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B1,Symptomatic,This study 
+W883a2b4,Y,2022,July ,Jul-22,Wytham Woods,A2,Wytham Woods_A2,B4,Non-symptomatic,This study 
+W8913a5b3,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B3,Symptomatic,This study 
+W893a3b4,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B4,Non-symptomatic,This study 
+W903a3b4,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B4,Non-symptomatic,This study 
+W9113a5b3,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B3,Symptomatic,This study 
+W913a1b2,Y,2022,July ,Jul-22,Wytham Woods,A1,Wytham Woods_A1,B2,Symptomatic,This study 
+W913a3b4,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B4,Non-symptomatic,This study 
+W9213a5b3,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B3,Symptomatic,This study 
+W923a3b4,Y,2022,July ,Jul-22,Wytham Woods,A3,Wytham Woods_A3,B4,Non-symptomatic,This study 
+W9313a5b4,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B4,Non-symptomatic,This study 
+W933a4b4,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B4,Non-symptomatic,This study 
+W943a4b4,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B4,Non-symptomatic,This study 
+W953a4b4,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B4,Non-symptomatic,This study 
+W9613a5b4,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B4,Non-symptomatic,This study 
+W973a4b5,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B5,Non-symptomatic,This study 
+W9813a5b5,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B5,Non-symptomatic,This study 
+W983a4b5,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B5,Non-symptomatic,This study 
+W9913a5b5,Y,2022,July ,Jul-22,Wytham Woods,A5,Wytham Woods_A5,B5,Non-symptomatic,This study 
+W993a4b5,Y,2022,July ,Jul-22,Wytham Woods,A4,Wytham Woods_A4,B5,Non-symptomatic,This study 
