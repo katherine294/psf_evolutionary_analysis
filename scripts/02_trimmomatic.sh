@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=trimmomatic
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=8G
 #SBATCH --nodes=1
@@ -16,7 +16,7 @@ module load Trimmomatic/0.39-Java-11
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
 DATADIR="$PROJECT_BASE/01.RawData"
 TRIMMED_DATA="$PROJECT_BASE/02.TrimmedReads"
-ADAPTOR_SEQ="$PROJECT_BASE/01.RawData/TruSeq2-PE.fa" #This file is saved in 
+ADAPTOR_SEQ="$PROJECT_BASE/01.RawData/TruSeq2-PE.fa" 
 
 mkdir -p "$TRIMMED_DATA" slurm_logs
 
@@ -32,6 +32,15 @@ else
   for f in *_1.fastq.gz; do [ -e "$f" ] || continue; SAMPLES+=("$(basename "$f" _1.fastq.gz)"); done
 fi
 
+# Check for adaptor file
+if [ ! -f "$ADAPTOR_SEQ" ]; then
+  echo "Adaptor file not found at $ADAPTOR_SEQ" >&2
+  echo "Please download it from:"
+  echo "https://github.com/katherine294/genotype-phenotype-paper/blob/main/files/TruSeq2-PE.fa"
+  exit 1
+fi
+
+# Trim each sample using trimmomatic
 for base in "${SAMPLES[@]}"; do
   echo "Processing sample: $base"
   IN1="$DATADIR/${base}_1.fastq.gz"
@@ -50,7 +59,7 @@ for base in "${SAMPLES[@]}"; do
     "$IN1" "$IN2" \
     "$OUT1P" "$OUT1U" \
     "$OUT2P" "$OUT2U" \
-    ILLUMINACLIP:TruSeq2-PE.fa:2:30:10:2:True \
+    ILLUMINACLIP:"${ADAPTOR_SEQ}":2:30:10:2:True \
     LEADING:20 TRAILING:20 SLIDINGWINDOW:10:20 MINLEN:50
 
 done
