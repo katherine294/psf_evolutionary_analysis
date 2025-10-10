@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem=4G
 #SBATCH --nodes=1
-#SBATCH --output=slurm_logs/merge_beds_%j.out
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/merge_beds_%j.out
 
 set -euo pipefail
 
