@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=8G
 #SBATCH --nodes=1
-#SBATCH --output=slurm_logs/02_trimmomatic_%j.out
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/02_trimmomatic_%j.out
 
 set -euo pipefail
 
