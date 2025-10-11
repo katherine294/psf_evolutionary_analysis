@@ -9,8 +9,14 @@ note: Assess whether specific biological pathways are under selection through en
 2. Extract genes which carry muttaions from the core genome alignment
 3. Run enrichment analysis on gene sets
 
-````{bash}
+Load libraries
+```{r}
 
+
+```
+
+````{r}
+df <- read_csv("binary_mutation_matrix_psf")
 
 
 ```
