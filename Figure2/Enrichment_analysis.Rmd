@@ -2,6 +2,7 @@
 title: "enrichment_analaysis_mutation_data"
 output: html_document
 date: "2025-07-12"
+note: Assess whether specific biological pathways are under selection through enrichment analysis.
 ---
 
 1. Run eggnog annotation on all amino acid sequences in the reference genome
