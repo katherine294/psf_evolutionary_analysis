@@ -1,0 +1,15 @@
+---
+title: "enrichment_analaysis_mutation_data"
+output: html_document
+date: "2025-07-12"
+---
+
+1. Run eggnog annotation on all amino acid sequences in the reference genome
+2. Extract genes which carry muttaions from the core genome alignment
+3. Run enrichment analysis on gene sets
+
+````{bash}
+
+
+
+```
