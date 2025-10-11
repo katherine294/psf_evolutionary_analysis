@@ -80,7 +80,7 @@ colnames(binary_df)
 
 # Check structure of dataframe
 View(binary_df)
-````
+```
 
 Re-add metadata to binary matrix - choose which metadata to add from the original csv files
                      
