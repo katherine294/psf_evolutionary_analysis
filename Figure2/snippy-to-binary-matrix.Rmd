@@ -1,0 +1,172 @@
+---
+title: "Snippy-to-binary-matrix"
+author: "katherine hinton"
+date: "2025-02-24"
+objective: Generate a presence/absence matrx including ALL mutation types annotated by snippy, including SNPs, MNPs, complex, indels.
+note: Save all snippy output .csv files into a single directory, where you will run this Rmd script from. 
+---
+
+Load packages and set working directory 
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+```
+
+Generate binary presence/absence matrix 
+This dataframe does not include any metadata, only the presence/absence of each mutation. 
+A new column is formed by merging "position" and "alt", to prevent merging of multiallelic sites. This means that two different alternate alleles at the same site are considered different mutations. This is important for filtering downstream to identify specific mutations associated with phenotypes.
+```{r}
+# Define column names
+col_names <- c("contig", "position", "type", "ref", "alt", "evidence", "ftype", "strand", "nt_pos", "aa_pos", "effect", "locus", "gene", "product")
+
+# Function to process CSV files and extract relevant columns, adding file_name
+process_csv_files <- function(column) {
+  csv_files <- list.files(pattern = "*.csv")  # Ensure only CSV files are selected
+  data_frames_list <- lapply(csv_files, function(file) {
+    df <- read_csv(file, col_names = FALSE, show_col_types = FALSE)  # Read without column names
+    df <- df[-1, ]  # Remove the first row
+    colnames(df) <- col_names  # Assign predefined column names
+    #df <- read_csv(file, col_names = col_names, show_col_types = FALSE) # replace previous 3 lines with this if you have no column headers in your csv file
+    df$pos_alt <- paste(df$position, df$alt, sep = "_")
+    df$file_name <- gsub(".csv$", "", file)  # Extract filename without .csv
+    df_filtered <- df %>% select(pos_alt, all_of(column))
+    return(df_filtered)
+  })
+  
+  # Merge all dataframes, ensuring unique column names
+  merged_df <- Reduce(function(x, y) full_join(x, y, by = "pos_alt"), data_frames_list)
+  
+  # If duplicates exist, rename them uniquely
+  colnames(merged_df) <- make.names(colnames(merged_df), unique = TRUE)
+  
+  return(merged_df)
+}
+
+# Process mutation presence/absence data
+binary_df <- process_csv_files("file_name")  
+
+# Check for unexpected duplicates
+sum(duplicated(binary_df$pos_alt))  # If >0, investigate
+
+# Function to get the first non-NA value in a column
+get_first_non_na <- function(column) {
+  non_na_values <- column[!is.na(column)]
+  if (length(non_na_values) > 0) {
+    return(non_na_values[1])
+  } else {
+    return(NA)
+  }
+}
+
+# Keep the first column as-is, rename the rest
+new_column_values <- c(colnames(binary_df)[1], sapply(binary_df[,-1], get_first_non_na))
+
+# Assign new column names
+colnames(binary_df) <- new_column_values
+
+# Transform NA to 0 and anything else 1
+binary_df[, -1] <- apply(binary_df[, -1], 2, function(col) {
+  col[is.na(col)] <- 0
+  col[col != 0] <- 1
+  return(col)
+})
+
+# Make pos_alt first header 
+colnames(binary_df)[1] <- "pos_alt"
+
+# Check all the correct strains are present - If you have added columns such as "1" and "0" check you don't have any empty csv files - these can mess ip the content of the binary dataframe
+colnames(binary_df)
+
+# Check structure of dataframe
+View(binary_df)
+````
+
+# --------------------------------------------------------------------------------------                      
+# Re-add metadata to binary matrix - choose which metadata to add from the original csv files
+# --------------------------------------------------------------------------------------
+                      
+```{r}
+
+# Function to get the first non-NA value in a row
+get_first_non_na_row <- function(row) {
+  non_na_values <- row[!is.na(row)]
+  if (length(non_na_values) > 0) {
+    return(non_na_values[1])
+  } else {
+    return(NA)
+  }
+}
+
+# Process CSV files and add the first non-NA row value as a new column
+process_metadata <- function() {
+  # Process each metadata file and create a "first_non_na_row" column
+  contig_info <- process_csv_files("contig") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(contig = first_non_na_row)
+  
+    locus_info <- process_csv_files("locus") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(locus = first_non_na_row)
+  
+  mutation_info <- process_csv_files("type") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(type = first_non_na_row)
+  
+  ref_info <- process_csv_files("ref") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(ref = first_non_na_row)
+  
+  alt_info <- process_csv_files("alt") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(alt = first_non_na_row)
+  
+  gene_info <- process_csv_files("gene") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(gene = first_non_na_row)
+  
+  effect_info <- process_csv_files("effect") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(effect = first_non_na_row)
+  
+  product_info <- process_csv_files("product") %>%
+    mutate(first_non_na_row = apply(select(., -pos_alt), 1, get_first_non_na_row)) %>%
+    select(pos_alt, first_non_na_row) %>%
+    rename(product = first_non_na_row)
+
+  # Merge all the metadata information
+  merged_metadata <- contig_info %>%
+    full_join(locus_info, by = "pos_alt") %>%
+    full_join(mutation_info, by = "pos_alt") %>%
+    full_join(ref_info, by = "pos_alt") %>%
+    full_join(alt_info, by = "pos_alt") %>%
+    full_join(gene_info, by = "pos_alt") %>%
+    full_join(effect_info, by = "pos_alt") %>%
+    full_join(product_info, by = "pos_alt")
+  
+  return(merged_metadata)
+}
+
+
+# Merge the metadata with the binary presence/absence data
+merged_df <- process_metadata()
+final_df <- merge(merged_df, binary_df, by = "pos_alt", all = TRUE)
+
+```
+
+Save final df as csv file
+```{r}
+
+write.csv(final_df, "~/binary_genotype_matrix_psf.csv", row.names = FALSE)
+
+# Select 10 mutations at random and check the original strain .csv file to ensure dataframe was formed correctly
+
+```                      
+                      
