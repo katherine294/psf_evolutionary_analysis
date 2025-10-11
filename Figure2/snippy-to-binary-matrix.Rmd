@@ -82,10 +82,8 @@ colnames(binary_df)
 View(binary_df)
 ````
 
-# --------------------------------------------------------------------------------------                      
-# Re-add metadata to binary matrix - choose which metadata to add from the original csv files
-# --------------------------------------------------------------------------------------
-                      
+Re-add metadata to binary matrix - choose which metadata to add from the original csv files
+                     
 ```{r}
 
 # Function to get the first non-NA value in a row
