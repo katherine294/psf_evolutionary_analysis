@@ -30,8 +30,8 @@ echo "Collecting annotated files into Panaroo input directory..."
 cd "$ANNOTATION_DIR"
 
 # Copy all relevant annotation outputs
-find . -type f -name "*.gff3" -exec cp {} "$GFF_INPUT" \;
-find . -type f -name "*.fna" -exec cp {} "$GFF_INPUT" \;
+find . -maxdepth 2 -type f -name "*.gff3" -exec cp {} "$GFF_INPUT" \;
+find . -maxdepth 2 -type f -name "*.fna" -exec cp {} "$GFF_INPUT" \;
 
 # Create a Panaroo input list file
 
