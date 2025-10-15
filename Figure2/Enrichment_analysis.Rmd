@@ -42,9 +42,9 @@ mamba activate "${CONDA_ENV_PATH}"
 
 # Define paths
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
-OUTDIR="Enrichment_analysis/eggnog_output_W163"
+OUTDIR="$PROJECT_BASE/Enrichment_analysis/eggnog_output_W163"
 REF_DIR="$PROJECT_BASE/reference_sequences"
-EGGNOGG_DB="/rds/homes/k/kgh742/psf_wgs_project/EGGNOGG_DB" # SAVE EGGNOG DATABASE TO THIS DIRECTORY 
+EGGNOGG_DB="$PROJECT_BASE/EGGNOGG_DB" # Directory you saved your EGGNOG database to 
 
 # Set the data directory environment variable (optional but useful)
 export EGGNOG_DATA_DIR="$EGGNOGG_DB"
@@ -53,18 +53,19 @@ mkdir -p $OUTDIR
 
 # Run eggNOG-mapper
   emapper.py \
-    -i W163a3b1.faa \ # use protein amino acid fasta as input
+    -i "$REF_DIR/W163a3b1.faa" \ # use protein amino acid fasta as input
     -o W163a3b1_mutations \ # Prefix
     --itype proteins \
     -m diamond \
-    --cpu 8 \
+    --cpu 50 \
     --tax_scope Bacteria \
     --output_dir "$OUTDIR"
 
+# CREATE MAPPING FILES --------------------
+
 cd "$OUTDIR"
 
-python scripts/createmappingfiles.py
-
+python $PROJECT_BASE/scripts/createmappingfiles.py
 ```
 
 
@@ -105,7 +106,7 @@ unique_nonsynonymous <- df %>%
 KEGG analysis
 ```{r}
 # Load KEGG mapping file 
-kegg_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/EGGNOG-OUTPUT-PROKKA/gene2kegg.txt", sep = "\t", stringsAsFactors = FALSE)
+kegg_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/gene2kegg.txt", sep = "\t", stringsAsFactors = FALSE)
 colnames(kegg_map) <- c("gene", "kegg_terms")
 gene2kegg <- strsplit(kegg_map$kegg_terms, ";")
 names(gene2kegg) <- kegg_map$gene
@@ -176,24 +177,8 @@ write.csv(sig_results_NS, "KEGG_signif_non-synonymous.csv")
 
 GO enrichment
 ```{r}
-# install clusterProfiler
-library(clusterProfiler)
-library(GO.db)
-library(ggplot2)
-library(dplyr)
-library(AnnotationDbi)
-
-
-#visualise data
-options(bitmapType='cairo')
-
-# Load test gene list
-all_mutated_genes <- scan("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/all_genes_124_140725.txt", what = "character")
-synon_genes <- scan("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/synonymous.txt", what = "character") # 0.98-0.15
-nonsynon_genes <- scan("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/nonsynonmous.txt", what = "character") # 0.15-0
-
 # Read gene-to-GO mapping (tab-delimited: geneID <tab> GO:term1;GO:term2...)
-go_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/EGGNOG-OUTPUT-PROKKA/gene2go.txt", sep = "\t", stringsAsFactors = FALSE)
+go_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/gene2kegg.txt", sep = "\t", stringsAsFactors = FALSE)
 colnames(go_map) <- c("gene", "go_terms")
 
 # Split the GO terms
@@ -204,22 +189,31 @@ names(gene2go) <- go_map$gene
 background_go_genes <- names(gene2go)
 
 # Run enrichment 
-ego <- enricher(gene = synon_genes,
+ego_S <- enricher(gene = unique_synonymous,
+                universe = background_go_genes,
+                TERM2GENE = stack(gene2go),
+                pvalueCutoff = 1,   # Increase to 1 for visualising top results if non are statistically significant
+                qvalueCutoff = 1)
+
+# Add GO term descriptions
+ego_S@result$Description <- AnnotationDbi::Term(ego_S@result$ID)
+
+# Visualise
+dotplot_S <- dotplot(ego_S)
+
+
+# Reun enrichment on non-synonymous genes
+ego_NS <- enricher(gene = unique_nonsynonymous,
                 universe = background_go_genes,
                 TERM2GENE = stack(gene2go),
                 pvalueCutoff = 1,
                 qvalueCutoff = 1)
 
 # Add GO term descriptions
-ego@result$Description <- AnnotationDbi::Term(ego@result$ID)
+ego_NS@result$Description <- AnnotationDbi::Term(ego_NS@result$ID)
 
 # Visualise
-nonsynon_dot <- dotplot(ego)
-
-nrow(ego@result)
-head(synon_genes)
-head(background_genes)
-head(stack(gene2go))
+dotplot_NS <- dotplot(ego_NS)
 
 
 ```
