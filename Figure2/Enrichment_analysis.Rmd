@@ -103,6 +103,43 @@ unique_nonsynonymous <- df %>%
   filter(!str_detect(effect, "synonymous_variant")) %>%  # remove synonymous variants 
    distinct(locus) %>%
    pull(locus)
+
+### SAVE SUMMARY TABLE
+# --- Define subsets ---
+# Total number of mutations
+total_mutations <- nrow(df)
+
+# Synonymous
+synonymous <- df %>%
+  filter(str_detect(effect, "synonymous_variant"))
+
+# Non-synonymous (excluding synonymous + keeping only genic)
+nonsynonymous <- df %>%
+  filter(!is.na(locus)) %>%
+  filter(!str_detect(effect, "synonymous_variant"))
+
+# Intragenic (mutations that have a locus)
+intergenic <- df %>%
+  filter(is.na(effect))
+
+# --- Create summary table ---
+summary_table <- tibble(
+  Category = c("All mutations", "Synonymous", "Non-synonymous", "Intergenic"),
+  Mutation_count = c(
+    nrow(df),
+    nrow(synonymous),
+    nrow(nonsynonymous),
+    nrow(intergenic)
+  ),
+  Unique_genes = c(
+    n_distinct(df$locus),
+    n_distinct(synonymous$locus),
+    n_distinct(nonsynonymous$locus),
+    n_distinct(intergenic$locus)
+  )
+)
+
+write_csv(summary_table, "/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/summary_table.csv")
 ```
 
 KEGG analysis
