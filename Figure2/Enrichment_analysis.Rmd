@@ -14,6 +14,8 @@ RUN EGGNOG TO ANNOTATE THE REFERENCE GENOME OF CHOICE --------------------------
 Prerequisites: 
 1. Download the eggnog database  -- https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.13#user-content-Installation
 2. Save createmappingfiles.py in a suitable directory e.g. "path/to/scripts" - https://github.com/katherine294/psf_evolutionary_analysis/tree/main/scripts
+   Change the line : emapper = pd.read_csv("W163A3B1_mutations.emapper.annotations", sep='\t', comment='#') to your prefix from eggnog annotation.
+
 
 ```{bash}
 #!/bin/bash
