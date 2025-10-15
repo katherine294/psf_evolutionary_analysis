@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load EggNOG annotations
-emapper = pd.read_csv("246539E_W163A3B1_chrom.emapper.annotations", sep='\t', comment='#')
+emapper = pd.read_csv("W163A3B1_mutations.emapper.annotations", sep='\t', comment='#')
 
 # Keep relevant columns
 emapper = emapper[['query', 'GOs', 'KEGG_Pathway', 'COG_category']]
