@@ -8,7 +8,7 @@ note: Save all snippy output .csv files into a single directory, where you will 
 
 Pre-requisites: process and trim raw paired end files
 
-Run snippy for each strain against the FULL reference, including extrachromosomal contigs. This is because the pangenome analysis is conducted with all genes, including those outside of the chromosome.
+Run snippy for each strain against the FULL reference, including extrachromosomal contigs.
 ```{bash}
 #!/bin/bash
 #SBATCH --job-name=snippy_align
