@@ -6,7 +6,60 @@ objective: Generate a presence/absence matrx including ALL mutation types annota
 note: Save all snippy output .csv files into a single directory, where you will run this Rmd script from. 
 ---
 
-Pre-requisites: Run scripts 01 to 09
+Pre-requisites: process and trim raw paired end files
+
+Run snippy for each strain against the FULL reference, including extrachromosomal contigs. This is because the pangenome analysis is conducted with all genes, including those outside of the chromosome.
+```{bash
+#!/bin/bash
+#SBATCH --job-name=snippy_align
+#SBATCH --time=08:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=8G
+#SBATCH --nodes=1
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/03_snippy_align_%j.out
+
+set -euo pipefail
+
+module purge
+module load bear-apps/2019b
+module load snippy/4.6.0-foss-2019b-Perl-5.30.0
+module load Python/3.7.4-GCCcore-8.3.0
+module load seqtk/1.3-GCC-8.3.0
+
+PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
+TRIMMED_DATA="$PROJECT_BASE/02.TrimmedReads"
+SNIPPY_OUTPUT="$PROJECT_BASE/snippy_output_enrichment"
+REF_DIR="$PROJECT_BASE/reference_sequences"
+
+mkdir -p "$SNIPPY_OUTPUT" slurm_logs
+
+#### YOU REQUIRE A COMPLETE, HIGH QUALITY REFERENCE GENOME. COPY THE ASSEMBLY FASTA INTO $REF_DIR #####
+
+while read -r strain; do
+  [ -z "$strain" ] && continue  # skip empty lines
+
+  echo "Processing strain: $strain"
+  OUTDIR="$SNIPPY_OUTPUT/$strain"
+  R1="$TRIMMED_DATA/${strain}_1P.trim.fastq.gz"
+  R2="$TRIMMED_DATA/${strain}_2P.trim.fastq.gz"
+  REFERENCE="$REF_DIR/246539E_W163A3B1.fasta"  ## Complete genome including all contigs
+
+  if [ ! -f "$R1" ] || [ ! -f "$R2" ]; then
+    echo "Missing trimmed reads for $strain - skipping" >&2
+    continue
+  fi
+
+  snippy --outdir "$OUTDIR" \
+    --ref "${REFERENCE}" \
+    --R1 "$R1" --R2 "$R2" \
+    --mincov 10 --minfrac 0.9 --mapqual 60 \
+    --unmapped --rgid "$strain" \
+    --cpus ${SLURM_CPUS_PER_TASK:-4}
+
+done < Strains.txt
+```
+
+Generate binary presence/absence matrix - !!! Copy each strains snippy-output csv file into the working directory this Rmd will be run from !!!
 
 Load packages and set working directory 
 ```{r}
@@ -14,8 +67,6 @@ library(readr)
 library(dplyr)
 library(tidyr)
 ```
-
-Generate binary presence/absence matrix 
 This dataframe does not include any metadata, only the presence/absence of each mutation. 
 A new column is formed by merging "position" and "alt", to prevent merging of multiallelic sites. This means that two different alternate alleles at the same site are considered different mutations. This is important for filtering downstream to identify specific mutations associated with phenotypes.
 ```{r}
@@ -84,8 +135,7 @@ colnames(binary_df)
 View(binary_df)
 ```
 
-Re-add metadata to binary matrix - choose which metadata to add from the original csv files
-                     
+Re-add metadata to binary matrix - choose which metadata to add from the original csv files                     
 ```{r}
 
 # Function to get the first non-NA value in a row
