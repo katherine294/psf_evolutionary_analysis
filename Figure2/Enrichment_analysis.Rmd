@@ -2,17 +2,18 @@
 title: "enrichment_analaysis_mutation_data"
 output: html_document
 date: "2025-07-12"
-note: Assess whether specific biological pathways are under selection through enrichment analysis.
+Objective: Assess whether specific biological pathways are under selection through enrichment analysis.
+Aims:
+1. Run eggnog annotation on reference amino acid fasta file 
+2. Extract reference genes which carry mutations from binary data matrix -- 
+3. Run enrichment analysis on gene sets
 ---
 
-1. Run eggnog annotation on all amino acid sequences in the reference genome
-2. Extract reference genes which carry mutations
-3. Run enrichment analysis on gene sets
 
 RUN EGGNOG TO ANNOTATE THE REFERENCE GENOME OF CHOICE ------------------------------
 Prerequisites: 
 1. Download the eggnog database  -- https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.13#user-content-Installation
-2. Save createmappingfiles.py in a suitable directory e.g. "path/to/scripts" - 
+2. Save createmappingfiles.py in a suitable directory e.g. "path/to/scripts" - https://github.com/katherine294/psf_evolutionary_analysis/tree/main/scripts
 
 ```{bash}
 #!/bin/bash
