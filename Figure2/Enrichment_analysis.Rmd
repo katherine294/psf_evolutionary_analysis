@@ -5,7 +5,7 @@ date: "2025-07-12"
 Objective: Assess whether specific biological pathways are under selection through enrichment analysis.
 Aims:
 1. Run eggnog annotation on reference amino acid fasta file 
-2. Extract reference genes which carry mutations from binary data matrix -- 
+2. Extract reference genes which carry mutations from binary data matrix -- https://github.com/katherine294/psf_evolutionary_analysis/tree/main/Figure2/snippy-to-binary.Rmd
 3. Run enrichment analysis on gene sets
 ---
 
