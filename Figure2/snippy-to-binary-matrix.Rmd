@@ -6,6 +6,8 @@ objective: Generate a presence/absence matrx including ALL mutation types annota
 note: Save all snippy output .csv files into a single directory, where you will run this Rmd script from. 
 ---
 
+Pre-requisites: Run scripts 01 to 09
+
 Load packages and set working directory 
 ```{r}
 library(readr)
