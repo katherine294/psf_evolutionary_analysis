@@ -6,17 +6,161 @@ note: Assess whether specific biological pathways are under selection through en
 ---
 
 1. Run eggnog annotation on all amino acid sequences in the reference genome
-2. Extract genes which carry muttaions from the core genome alignment
+2. Extract reference genes which carry mutations
 3. Run enrichment analysis on gene sets
 
 Load libraries
 ```{r}
+library(readr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
 
+library(KEGGREST)  # KEGG analysis
+library(GO.db) # GO analysis
+library(AnnotationDbi) # GO analysis
+library(clusterProfiler) # KEGG and GO
 
+options(bitmapType='cairo') # Visualising graphs within an interactive R session
 ```
 
+
+Create gene lists of genes carrying synonymous or non-synoymous mutations
 ````{r}
 df <- read_csv("binary_mutation_matrix_psf")
+
+# Save list of genes carrying synonymous of non-synonymous mutations  
+unique_synonymous <- df %>%
+  filter(str_detect(effect, "synonymous_variant")) %>%
+  select(locus, effect) %>%
+  distinct(locus) %>%     # Only keep unique genes
+  pull(locus)    # Save as vector not dataframe
+
+unique_nonsynonymous <- df %>%
+  filter(!is.na(locus)) %>%                   # keep only rows with locus not NA
+  filter(!str_detect(effect, "synonymous_variant")) %>%  # remove synonymous variants 
+   distinct(locus) %>%
+   pull(locus)
+```
+
+KEGG analysis
+```{r}
+# Load KEGG mapping file 
+kegg_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/EGGNOG-OUTPUT-PROKKA/gene2kegg.txt", sep = "\t", stringsAsFactors = FALSE)
+colnames(kegg_map) <- c("gene", "kegg_terms")
+gene2kegg <- strsplit(kegg_map$kegg_terms, ";")
+names(gene2kegg) <- kegg_map$gene
+
+# Load background test gene list
+background_genes <- names(gene2kegg)
+
+### Run enrichment on synonymous gene set ###
+kegg_enrich_S <- enricher(gene = unique_synonymous,
+                universe = background_genes,
+                TERM2GENE = stack(gene2kegg),
+                pvalueCutoff = 1,
+                qvalueCutoff = 1)
+
+# get KEGG IDs from enrichment
+kegg_ids_S <- kegg_enrich_S@result$ID  # example: ko00010, ko00020
+
+# fetch names/descriptions
+descs_S <- sapply(kegg_ids_S, function(id) {
+  res <- tryCatch(keggGet(id), error = function(e) NULL)
+  if (!is.null(res)) res[[1]]$NAME else NA
+})
+
+# add to results
+kegg_enrich_S@result$Description <- descs_S
+
+# Visualise
+kegg_plot_S <- dotplot(kegg_enrich_S, showCategory = 20)
+kegg_plot_S
+
+# Analysing results table
+sig_results_S <- as.data.frame(kegg_enrich_S)
+sig_results_S <- sig_results_S[sig_results_S$p.adjust < 0.05, ]
+sig_results_S
+
+write.csv(sig_results_S, "KEGG_signif_synonymous.csv")
+
+### Repeat enrichment analysis on non-synonymous gene set ###
+kegg_enrich_NS <- enricher(gene = unique_nonsynonymous,
+                universe = background_genes,
+                TERM2GENE = stack(gene2kegg),
+                pvalueCutoff = 1,
+                qvalueCutoff = 1)
+
+# get KEGG IDs from enrichment
+kegg_ids_NS <- kegg_enrich_NS@result$ID  # example: ko00010, ko00020
+
+# fetch names/descriptions
+descs_NS <- sapply(kegg_ids_NS, function(id) {
+  res <- tryCatch(keggGet(id), error = function(e) NULL)
+  if (!is.null(res)) res[[1]]$NAME else NA
+})
+
+# add to results
+kegg_enrich_NS@result$Description <- descs_NS
+
+# Visualise
+kegg_plot_NS <- dotplot(kegg_enrich_NS, showCategory = 20)
+kegg_plot_NS
+
+# Analysing results table
+sig_results_NS <- as.data.frame(kegg_enrich_NS)
+sig_results_NS <- sig_results_NS[sig_results_NS$p.adjust < 0.05, ]
+sig_results_NS
+
+write.csv(sig_results_NS, "KEGG_signif_non-synonymous.csv")
+```
+
+GO enrichment
+```{r}
+# install clusterProfiler
+library(clusterProfiler)
+library(GO.db)
+library(ggplot2)
+library(dplyr)
+library(AnnotationDbi)
+
+
+#visualise data
+options(bitmapType='cairo')
+
+# Load test gene list
+all_mutated_genes <- scan("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/all_genes_124_140725.txt", what = "character")
+synon_genes <- scan("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/synonymous.txt", what = "character") # 0.98-0.15
+nonsynon_genes <- scan("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/nonsynonmous.txt", what = "character") # 0.15-0
+
+# Read gene-to-GO mapping (tab-delimited: geneID <tab> GO:term1;GO:term2...)
+go_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/03.Snippy_W163_chrom/EGGNOG-OUTPUT-PROKKA/gene2go.txt", sep = "\t", stringsAsFactors = FALSE)
+colnames(go_map) <- c("gene", "go_terms")
+
+# Split the GO terms
+gene2go <- strsplit(go_map$go_terms, ";")
+names(gene2go) <- go_map$gene
+
+# Load background test gene list
+background_go_genes <- names(gene2go)
+
+# Run enrichment 
+ego <- enricher(gene = synon_genes,
+                universe = background_go_genes,
+                TERM2GENE = stack(gene2go),
+                pvalueCutoff = 1,
+                qvalueCutoff = 1)
+
+# Add GO term descriptions
+ego@result$Description <- AnnotationDbi::Term(ego@result$ID)
+
+# Visualise
+nonsynon_dot <- dotplot(ego)
+
+nrow(ego@result)
+head(synon_genes)
+head(background_genes)
+head(stack(gene2go))
 
 
 ```
