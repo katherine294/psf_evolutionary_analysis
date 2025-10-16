@@ -88,7 +88,7 @@ options(bitmapType='cairo') # Visualising graphs within an interactive R session
 
 
 Create gene lists of genes carrying synonymous or non-synoymous mutations
-````{r}
+
 ```{r}
 df <- read_csv("/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/binary_mutation_matrix_psf.csv")
 
