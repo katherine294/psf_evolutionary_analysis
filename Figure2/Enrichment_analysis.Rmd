@@ -89,20 +89,8 @@ options(bitmapType='cairo') # Visualising graphs within an interactive R session
 
 Create gene lists of genes carrying synonymous or non-synoymous mutations
 ````{r}
-df <- read_csv("binary_mutation_matrix_psf")
-
-# Save list of genes carrying synonymous of non-synonymous mutations  
-unique_synonymous <- df %>%
-  filter(str_detect(effect, "synonymous_variant")) %>%
-  select(locus, effect) %>%
-  distinct(locus) %>%     # Only keep unique genes
-  pull(locus)    # Save as vector not dataframe
-
-unique_nonsynonymous <- df %>%
-  filter(!is.na(locus)) %>%                   # keep only rows with locus not NA
-  filter(!str_detect(effect, "synonymous_variant")) %>%  # remove synonymous variants 
-   distinct(locus) %>%
-   pull(locus)
+```{r}
+df <- read_csv("/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/binary_mutation_matrix_psf.csv")
 
 ### SAVE SUMMARY TABLE
 # --- Define subsets ---
@@ -139,7 +127,14 @@ summary_table <- tibble(
   )
 )
 
-write_csv(summary_table, "/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/summary_table.csv")
+write_csv(summary_table, "/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/summary_all_mutations.csv")
+
+# Create gene list for input into enrichment analysis 
+unique_all <- df %>%
+  filter(!is.na(locus)) %>%
+  distinct(locus) %>%
+  pull(locus)
+
 ```
 
 KEGG analysis
@@ -154,70 +149,67 @@ names(gene2kegg) <- kegg_map$gene
 background_genes <- names(gene2kegg)
 
 ### Run enrichment on synonymous gene set ###
-kegg_enrich_S <- enricher(gene = unique_synonymous,
+kegg_enrich <- enricher(gene = unique_all,
                 universe = background_genes,
                 TERM2GENE = stack(gene2kegg),
-                pvalueCutoff = 1,
+                pvalueCutoff = 1, # for plotting, I keep this at 1, and then annotated significant results with a *. If you have lots of significant results, decrease this to 0.05 even for plotting.
                 qvalueCutoff = 1)
 
 # get KEGG IDs from enrichment
-kegg_ids_S <- kegg_enrich_S@result$ID  # example: ko00010, ko00020
+kegg_ids <- kegg_enrich@result$ID  # example: ko00010, ko00020
 
 # fetch names/descriptions
-descs_S <- sapply(kegg_ids_S, function(id) {
+descs <- sapply(kegg_ids, function(id) {
   res <- tryCatch(keggGet(id), error = function(e) NULL)
   if (!is.null(res)) res[[1]]$NAME else NA
 })
 
 # add to results
-kegg_enrich_S@result$Description <- descs_S
+kegg_enrich@result$Description <- descs
 
 # Visualise
-kegg_plot_S <- dotplot(kegg_enrich_S, showCategory = 20)
-kegg_plot_S
+kegg_plot <- dotplot(kegg_enrich, showCategory = 20)
+kegg_plot # Save dotplot
 
-# Analysing results table
-sig_results_S <- as.data.frame(kegg_enrich_S)
-sig_results_S <- sig_results_S[sig_results_S$p.adjust < 0.05, ]
-sig_results_S
-
-write.csv(sig_results_S, "KEGG_signif_synonymous.csv")
-
-### Repeat enrichment analysis on non-synonymous gene set ###
-kegg_enrich_NS <- enricher(gene = unique_nonsynonymous,
-                universe = background_genes,
-                TERM2GENE = stack(gene2kegg),
-                pvalueCutoff = 1,
-                qvalueCutoff = 1)
-
-# get KEGG IDs from enrichment
-kegg_ids_NS <- kegg_enrich_NS@result$ID  # example: ko00010, ko00020
-
-# fetch names/descriptions
-descs_NS <- sapply(kegg_ids_NS, function(id) {
-  res <- tryCatch(keggGet(id), error = function(e) NULL)
-  if (!is.null(res)) res[[1]]$NAME else NA
-})
-
-# add to results
-kegg_enrich_NS@result$Description <- descs_NS
-
-# Visualise
-kegg_plot_NS <- dotplot(kegg_enrich_NS, showCategory = 20)
-kegg_plot_NS
-
-# Analysing results table
-sig_results_NS <- as.data.frame(kegg_enrich_NS)
-sig_results_NS <- sig_results_NS[sig_results_NS$p.adjust < 0.05, ]
-sig_results_NS
-
-write.csv(sig_results_NS, "KEGG_signif_non-synonymous.csv")
 ```
 
-GO enrichment
+## --- KEGG enrichment: extract and summarize significant results --- ##
+```{r}
+# Convert KEGG enrichment results to a dataframe and keep only significant pathways
+sig_results <- as.data.frame(kegg_enrich_S) %>%
+  filter(p.adjust < 0.05, str_starts(ID, "ko"))
+
+# Extract individual genes from the 'geneID' column (split on "/")
+sig_results_genes <- sig_results %>%
+  separate_rows(geneID, sep = "/") %>%
+  mutate(geneID = str_trim(geneID)) %>%
+  select(Description, geneID)
+
+# Merge with binary mutation dataframe ('df'); if multiple mutations map to a gene,
+# each will appear on a separate row
+merged <- dplyr::left_join(sig_results_genes, df, by = c("geneID" = "locus"))
+
+# Count the number of strains carrying each mutation
+# (Assumes strain columns are in positions 11 to 135)
+merged <- merged %>%
+  mutate(total_count = rowSums(select(., 11:135) == 1, na.rm = TRUE)) # Change 11:135 to the columns containing strains
+
+# Subset relevant columns for output
+merged_select <- merged %>%
+  select(Description, geneID, type, gene, product, effect, total_count)
+
+# Write results to CSV
+write_csv(
+  merged_select,
+  "/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/KEGG_summary_signif_161025.csv"
+)
+```
+
+
+Gene ontology analysis
 ```{r}
 # Read gene-to-GO mapping (tab-delimited: geneID <tab> GO:term1;GO:term2...)
-go_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/gene2kegg.txt", sep = "\t", stringsAsFactors = FALSE)
+go_map <- read.table("/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/gene2go.txt", sep = "\t", stringsAsFactors = FALSE)
 colnames(go_map) <- c("gene", "go_terms")
 
 # Split the GO terms
@@ -228,31 +220,45 @@ names(gene2go) <- go_map$gene
 background_go_genes <- names(gene2go)
 
 # Run enrichment 
-ego_S <- enricher(gene = unique_synonymous,
-                universe = background_go_genes,
-                TERM2GENE = stack(gene2go),
-                pvalueCutoff = 1,   # Increase to 1 for visualising top results if non are statistically significant
-                qvalueCutoff = 1)
-
-# Add GO term descriptions
-ego_S@result$Description <- AnnotationDbi::Term(ego_S@result$ID)
-
-# Visualise
-dotplot_S <- dotplot(ego_S)
-
-
-# Reun enrichment on non-synonymous genes
-ego_NS <- enricher(gene = unique_nonsynonymous,
+ego <- enricher(gene = unique_all,
                 universe = background_go_genes,
                 TERM2GENE = stack(gene2go),
                 pvalueCutoff = 1,
                 qvalueCutoff = 1)
 
 # Add GO term descriptions
-ego_NS@result$Description <- AnnotationDbi::Term(ego_NS@result$ID)
+ego@result$Description <- AnnotationDbi::Term(ego@result$ID)
 
 # Visualise
-dotplot_NS <- dotplot(ego_NS)
+dotplot <- dotplot(ego)
 
+# Convert GO enrichment results to a dataframe and keep only significant pathways
+sig_results_go <- as.data.frame(ego) %>%
+  filter(p.adjust < 0.05, str_starts(ID, "GO"))
+
+# Extract individual genes from the 'geneID' column (split on "/")
+sig_results_genes_go <- sig_results_go %>%
+  separate_rows(geneID, sep = "/") %>%
+  mutate(geneID = str_trim(geneID)) %>%
+  select(Description, geneID)
+
+# Merge with binary mutation dataframe ('df'); if multiple mutations map to a gene,
+# each will appear on a separate row
+merged_go <- dplyr::left_join(sig_results_genes_go, df, by = c("geneID" = "locus"))
+
+# Count the number of strains carrying each mutation
+# (Assumes strain columns are in positions 11 to 135)
+merged_go <- merged_go %>%
+  mutate(total_count = rowSums(select(., 11:135) == 1, na.rm = TRUE))
+
+# Subset relevant columns for output
+merged_go_subset <- merged_go %>%
+  select(Description, geneID, type, gene, product, effect, total_count)
+
+# Write results to CSV
+write_csv(
+  merged_go_subset,
+  "/rds/homes/k/kgh742/psf_wgs_project/Enrichment_analysis/eggnog_output_W163/GO_summary_signif_161025.csv"
+)
 
 ```
