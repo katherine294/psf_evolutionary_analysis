@@ -1,0 +1,60 @@
+---
+title: "Pangenomic analysis: orthologue clustering, QC, presence/absence analysis, enrichment"
+output: html_notebook
+---
+
+
+Assemble, annotate and run panaroo
+```{bash}
+sbatch scripts/09.Assembly.sh
+
+sbatch scripts/10.bakta_annotation.sh
+
+sbatch scripts/11.Panaroo.sh
+```
+
+Create core gene tree with IQTREE
+```{bash}
+#!/bin/bash
+#SBATCH --time 120:00:00
+#SBATCH --ntasks 32
+#SBATCH --nodes 1
+
+set -e
+
+module purge
+module load bear-apps/2022b
+module load IQ-TREE/2.2.2.6-gompi-2022b
+
+iqtree2 -s core_gene_alignment_filtered.aln \
+-B 1000 -alrt 1000 -T 30 \
+-pre PsFUNMERGED_core_gene_tree
+
+### collapse clades <70 ###
+
+module purge; module load bluebear
+module load bear-apps/2022b
+module load Miniforge3/24.1.2-0
+
+eval "$(${EBROOTMINIFORGE3}/bin/conda shell.bash hook)"
+source "${EBROOTMINIFORGE3}/etc/profile.d/mamba.sh"
+
+# Define the path to your environment (modify as appropriate)
+CONDA_ENV_PATH="/rds/homes/k/kgh742/psf_wgs_project/conda/${USER}_gotree"
+
+export CONDA_PKGS_DIRS="/scratch/${USER}/conda_pkgs"
+
+# Create the environment. Only required once.
+mamba create --yes --prefix "${CONDA_ENV_PATH}"
+
+# Activate the environment
+mamba activate "${CONDA_ENV_PATH}"
+
+# Continue to install any further items as required.
+mamba install --yes gotree
+
+# Activate the environment
+mamba activate "${CONDA_ENV_PATH}"
+
+gotree collapse support --support 70 --input PsFUNMERGED_core_gene_tree.treefile --output /rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/04.SpadesOutputFiles/bakta_output/panaroo_ncbi_reduced_99core/ncbi_reduced_99core_70_mpr.nwk
+```
