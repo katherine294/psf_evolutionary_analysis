@@ -126,10 +126,10 @@ library(RColorBrewer)
 library(tidyverse)
 
 # --- Load Panaroo presence/absence file ---
-pa <- read.csv("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/04.SpadesOutputFiles/bakta_output/panaroo_ncbi_reduced_99core/gene_presence_absence.csv", 
+pa <- read.csv("/rds/homes/k/kgh742/psf_wgs_project/Panaroo_output/gene_presence_absence.csv", 
                header = TRUE, stringsAsFactors = FALSE)
 
-meta <- read_csv("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/04.SpadesOutputFiles/bakta_output/metadata_clade.csv")
+meta <- read_csv("/rds/homes/k/kgh742/psf_wgs_project/metadata_clade.csv")
 rownames(meta) <- meta$Strain
 
 # --- Extract presence/absence matrix (adjust start column if needed) ---
@@ -191,4 +191,37 @@ legend("topright", inset = c(-0.25, 0),
 par(xpd = FALSE)
 ```
 
+Extract Distance-based RDA
+```{r}
+library(vegan)
+# --- Distance-based RDA (like PCoA but with loadings) ---
+cap <- capscale(t(mat_bin_filtered) ~ 1, distance = "jaccard")
+
+# Extract "species" scores (i.e., gene loadings)
+loadings <- scores(cap, display = "species")
+
+# --- Top/bottom 20 for PC1 ---
+top_pos_pc1 <- head(order(loadings[,1], decreasing = TRUE), 20)
+top_neg_pc1 <- head(order(loadings[,1], decreasing = FALSE), 20)
+genes_pc1 <- data.frame(
+  Gene = rownames(loadings)[c(top_pos_pc1, top_neg_pc1)],
+  Axis = "PC1",
+  Loading = loadings[c(top_pos_pc1, top_neg_pc1), 1]
+)
+
+# --- Top/bottom 20 for PC2 ---
+top_pos_pc2 <- head(order(loadings[,2], decreasing = TRUE), 20)
+top_neg_pc2 <- head(order(loadings[,2], decreasing = FALSE), 20)
+genes_pc2 <- data.frame(
+  Gene = rownames(loadings)[c(top_pos_pc2, top_neg_pc2)],
+  Axis = "PC2",
+  Loading = loadings[c(top_pos_pc2, top_neg_pc2), 2]
+)
+
+# --- Combine into single dataframe ---
+gene_loadings <- rbind(genes_pc1, genes_pc2) %>%
+  as.data.frame() 
+
+write_csv(gene_loadings, "")
+```
 
