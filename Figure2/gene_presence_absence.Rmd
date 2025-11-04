@@ -222,6 +222,47 @@ genes_pc2 <- data.frame(
 gene_loadings <- rbind(genes_pc1, genes_pc2) %>%
   as.data.frame() 
 
-write_csv(gene_loadings, "")
+write_csv(gene_loadings, "/rds/homes/k/kgh742/psf_wgs_project/Panaroo_output/top20_gene_loadings.csv")
 ```
 
+
+PULL OUT WHICH STRAINS HAVE GENES OF INTEREST IN 
+```{R}
+# --- Genes of interest (your full list) ---
+genes_interest <- c(
+  "group_3841","group_3840","group_3839","group_3838","group_3837",
+  "group_3836","group_3835","traD","group_3827","group_3826",
+  "group_3791","group_3787","group_3782","group_3774","group_3765",
+  "group_3738","group_3736","group_3735","group_3734","group_3686",
+  "group_3250","traJ","group_3776","group_4142","group_3498",
+  "group_3561","group_2888","group_1857","korA~~~trfB","group_1999",
+  "group_2904","group_3869","group_3355","group_1772","group_498",
+  "group_3798","group_3132","group_2816","group_3225","group_555",
+  "group_2486","group_2190","group_3563","group_3812","group_3721",
+  "group_3718","group_3612","group_3514","group_3162","group_2945",
+  "group_2886","group_2792","abiV","group_2018","group_1885",
+  "group_4060","group_4059","group_3530","group_3930","group_2395",
+  "group_3783","group_3606","group_3920","group_3919","group_3918",
+  "group_3917","group_3916","group_3915","group_3914","group_3913",
+  "group_3912","excA","group_3806","group_3923","group_3394","ddpX",
+  "group_1170","ddpC","group_909","group_816"
+)
+
+# --- Subset the presence/absence matrix ---
+subset_mat <- mat_bin_filtered[genes_interest, , drop = FALSE]
+
+# --- Convert to comma-separated list of strains ---
+df_gene_strains <- data.frame(
+  Gene = rownames(subset_mat),
+  Strains = apply(subset_mat, 1, function(x) {
+    paste(colnames(subset_mat)[x == 1], collapse = ",")
+  }),
+  stringsAsFactors = FALSE
+)
+
+# View result
+df_gene_strains
+
+write_csv(df_gene_strains, "/rds/homes/k/kgh742/psf_wgs_project/Panaroo_output/jaccard_pcoa_loading_strains.csv")
+
+```
