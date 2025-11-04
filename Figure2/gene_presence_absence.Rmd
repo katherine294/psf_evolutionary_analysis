@@ -16,21 +16,28 @@ sbatch scripts/11.Panaroo.sh
 Create core gene tree with IQTREE
 ```{bash}
 #!/bin/bash
-#SBATCH --time 120:00:00
-#SBATCH --ntasks 32
-#SBATCH --nodes 1
+#SBATCH --job-name=iqtree2
+#SBATCH --time=24:00:00
+#SBATCH --ntasks=4
+#SBATCH --nodes=1
+#SBATCH --output=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/iqtree2_%A.out
+#SBATCH --error=/rds/homes/k/kgh742/psf_wgs_project/slurm_logs/iqtree2_%A.err
 
-set -e
+set -euo pipefail
 
 module purge
 module load bear-apps/2022b
 module load IQ-TREE/2.2.2.6-gompi-2022b
 
-iqtree2 -s core_gene_alignment_filtered.aln \
--B 1000 -alrt 1000 -T 30 \
--pre PsFUNMERGED_core_gene_tree
+# Define paths
+PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
+INPATH="$PROJECT_BASE/Panaroo_output"
 
-### collapse clades <70 ###
+iqtree2 -s $INPATH/core_gene_alignment_filtered.aln \
+-B 1000 -alrt 1000 -T 30 \
+-pre ncbi_reduced_99core
+
+### collapse clades <70 using gotree ###
 
 module purge; module load bluebear
 module load bear-apps/2022b
