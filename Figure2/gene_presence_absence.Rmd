@@ -7,9 +7,7 @@ output: html_notebook
 Assemble, annotate and run panaroo
 ```{bash}
 sbatch scripts/09.Assembly.sh
-
 sbatch scripts/10.bakta_annotation.sh
-
 sbatch scripts/11.Panaroo.sh
 ```
 
@@ -33,35 +31,164 @@ module load IQ-TREE/2.2.2.6-gompi-2022b
 PROJECT_BASE="/rds/homes/k/kgh742/psf_wgs_project"
 INPATH="$PROJECT_BASE/Panaroo_output"
 
-iqtree2 -s $INPATH/core_gene_alignment_filtered.aln \
+cd $INPATH
+
+iqtree2 -s core_gene_alignment_filtered.aln \
 -B 1000 -alrt 1000 -T 30 \
 -pre ncbi_reduced_99core
 
-### collapse clades <70 using gotree ###
+# -----------------------------------------------------------------------------------------#
+#                           Collapse clades < 70 support                                   # 
+# -----------------------------------------------------------------------------------------#
 
-module purge; module load bluebear
+# Reload dependancies as they use a different bear version
+module purge
 module load bear-apps/2022b
 module load Miniforge3/24.1.2-0
 
+# Initialise conda/mamba
 eval "$(${EBROOTMINIFORGE3}/bin/conda shell.bash hook)"
 source "${EBROOTMINIFORGE3}/etc/profile.d/mamba.sh"
 
-# Define the path to your environment (modify as appropriate)
+# Define paths
 CONDA_ENV_PATH="/rds/homes/k/kgh742/psf_wgs_project/conda/${USER}_gotree"
-
 export CONDA_PKGS_DIRS="/scratch/${USER}/conda_pkgs"
 
-# Create the environment. Only required once.
-mamba create --yes --prefix "${CONDA_ENV_PATH}"
+# Create environment (only needs to be done once)
+if [ ! -d "${CONDA_ENV_PATH}" ]; then
+    echo "Creating gotree conda environment..."
+    mamba create --yes --prefix "${CONDA_ENV_PATH}" python=3.10 gotree
+fi
 
-# Activate the environment
+# Activate environment
 mamba activate "${CONDA_ENV_PATH}"
 
-# Continue to install any further items as required.
-mamba install --yes gotree
+# Input and output tree files from IQ-TREE2
+INPUT_TREE="ncbi_reduced_99core.tree"
+OUTPUT_TREE="ncbi_reduced_99core_70BS_collapsed.tree"
 
-# Activate the environment
-mamba activate "${CONDA_ENV_PATH}"
+# Collapse nodes below 70 bootstrap support
+echo "Starting gotree clade collapse..."
 
-gotree collapse support --support 70 --input PsFUNMERGED_core_gene_tree.treefile --output /rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/04.SpadesOutputFiles/bakta_output/panaroo_ncbi_reduced_99core/ncbi_reduced_99core_70_mpr.nwk
+gotree collapse support \
+  --support 70 \
+  --input "$INPUT_TREE" \
+  --output "$OUTPUT_TREE"
+
+echo "Collapsed tree saved as: $OUTPUT_TREE"
 ```
+
+Gene presence/absence image using Panstripe
+```{r}
+# Load packages
+library(panstripe)
+library(ape)
+library(patchwork)
+
+# Set random seed for reproducibility
+set.seed(1234)
+
+# Visualisation on interactive cluster
+options(bitmapType='cairo')
+
+### Read in file paths 
+phylo.file.name <- "/rds/homes/k/kgh742/psf_wgs_project/Panaroo_output/ncbi_reduced_99core_70_mpr.tree"
+rtab.file.name <- "/rds/homes/k/kgh742/psf_wgs_project/Panaroo_output/gene_presence_absence.Rtab"
+
+# Load files
+pa <- read_rtab(rtab.file.name)
+tree <- read.tree(phylo.file.name)
+
+# Run panstripe - optional analyses - info https://github.com/gtonkinhill/panstripe
+fit <- panstripe(pa, tree)
+fit$summary
+plot_pangenome_params(fit)
+plot_pangenome_cumulative(fit)
+plot_residuals(fit)
+plot_tsne(pa)
+
+# Define output file and resolution - save as high res PNG
+png("/rds/homes/k/kgh742/psf_wgs_project/Panaroo_output/presence_absence_variable.png", width = 400, height = 400, units='mm', res = 300)
+
+# Plot your tree
+variable_genes <- colnames(pa)[apply(pa, 2, sd) > 0]
+plot_tree_pa(tree = tree, pa = pa, genes = variable_genes,
+             label_tips = FALSE, align = FALSE, label_genes = FALSE, cols = "black")
+
+# Close the device to write file
+dev.off()
+```
+
+Jaccard PCoA and plot
+```{r}
+library(vegan)
+library(RColorBrewer)
+library(tidyverse)
+
+# --- Load Panaroo presence/absence file ---
+pa <- read.csv("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/04.SpadesOutputFiles/bakta_output/panaroo_ncbi_reduced_99core/gene_presence_absence.csv", 
+               header = TRUE, stringsAsFactors = FALSE)
+
+meta <- read_csv("/rds/homes/k/kgh742/psf_wgs_project/01.RawData/02.TrimmedReads/04.SpadesOutputFiles/bakta_output/metadata_clade.csv")
+rownames(meta) <- meta$Strain
+
+# --- Extract presence/absence matrix (adjust start column if needed) ---
+mat <- pa[, 4:ncol(pa)]
+rownames(mat) <- pa$Gene
+
+# --- Convert to binary (0/1) ---
+mat_bin <- ifelse(mat == "", 0, 1)
+mat_bin <- as.matrix(mat_bin)
+
+# --- Filter invariant genes and strains ---
+mat_bin_filtered <- mat_bin[, apply(mat_bin, 2, function(x) length(unique(x)) > 1)]
+mat_bin_filtered <- mat_bin_filtered[apply(mat_bin_filtered, 1, function(x) length(unique(x)) > 1), ]
+mat_bin_filtered <- mat_bin_filtered[, apply(mat_bin_filtered, 2, var) > 0]
+
+# --- Count variable genes ---
+num_variable_genes <- nrow(mat_bin_filtered)
+cat("Number of variable genes:", num_variable_genes, "\n")
+
+# --- Match metadata order to isolates in matrix ---
+meta <- meta[colnames(mat_bin_filtered), ]
+
+# --- Distance-based PCoA (Jaccard) ---
+dist_jac <- vegdist(t(mat_bin_filtered), method = "jaccard", binary = TRUE)
+pcoa_jac <- cmdscale(dist_jac, k = 2, eig = TRUE)
+
+# --- Define factor in desired order ---
+legend_order <- c("1A","2A","3A","4A","4B","5A","6A","6B",
+                  "7A","7B","8A","8B","8C","9A","10A","12")
+meta$clade_subclade <- factor(meta$clade_subclade, levels = legend_order)
+
+# --- Generate color palette ---
+n_groups <- length(levels(meta$clade_subclade))
+palette <- brewer.pal(min(n_groups, 12), "Paired")
+if (n_groups > 12) {
+  palette <- colorRampPalette(brewer.pal(12, "Paired"))(n_groups)
+}
+
+# --- Map clades to colors ---
+color_map <- setNames(palette, levels(meta$clade_subclade))
+cols <- color_map[as.character(meta$clade_subclade)]
+cols_trans <- adjustcolor(cols, alpha.f = 0.8)
+
+# --- Plot PCoA ---
+par(mar = c(5, 4, 4, 8))  # extra margin for legend
+plot(pcoa_jac$points[,1], pcoa_jac$points[,2],
+     pch = 19, col = cols_trans,
+     xlab = "PCoA1", ylab = "PCoA2",
+     main = "PCoA (Jaccard)")
+
+# --- Add legend outside plot ---
+par(xpd = TRUE)
+legend("topright", inset = c(-0.25, 0),
+       legend = legend_order,
+       col = palette,
+       pch = 19,
+       ncol = 1,
+       cex = 0.8)
+par(xpd = FALSE)
+```
+
+
