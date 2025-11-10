@@ -1,6 +1,6 @@
-## An evolutionary analysis of phytopathogen Pseudomonas savastanoi pv. fraxini, casual agent of ash canker
+# An evolutionary analysis of phytopathogen Pseudomonas savastanoi pv. fraxini, casual agent of ash canker
 
-A comparative genetic and phenotypic analysis to identify evolutionary processes driving trait diversification in P. savastanoi pv. fraxini. 
+### A comparative genetic and phenotypic analysis to identify evolutionary processes driving trait diversification in P. savastanoi pv. fraxini. 
 
 Background: Pseudomonas savastanoi pv. fraxini (Psf) is a phytopathogenic bacterium responsible for the formation of distinctive erumpent cankers on European ash (Fraxinus excelsior). It belongs to the P. syringae species complex — a diverse group of plant-associated bacteria that have served as models for studying virulence, adaptation, and evolution.
 
@@ -10,6 +10,6 @@ Summary: This study combines comparative genomics with phenotypic characterisati
 
 These genomic approaches were integrated with phenotypic assays of ecologically relevant traits, including swarming motility and biosurfactant production, to identify variants associated with adaptive phenotypes. Together, these results reveal patterns of population structure, gene flow, and functional diversification that illuminate the evolutionary ecology of P. savastanoi pv. fraxini. 
 
-# All raw sequencing data and assemblies are accessible from BioProject PRJNA1344481.
+### All raw sequencing data and assemblies are accessible from BioProject PRJNA1344481.
 
 
