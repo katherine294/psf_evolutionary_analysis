@@ -2,7 +2,7 @@
 
 ### A comparative genetic and phenotypic analysis to identify evolutionary processes driving trait diversification in P. savastanoi pv. fraxini. 
 
-**Background:** Pseudomonas savastanoi pv. fraxini (Psf) is a phytopathogenic bacterium responsible for the formation of distinctive erumpent cankers on European ash (Fraxinus excelsior). It belongs to the P. syringae species complex — a diverse group of plant-associated bacteria that have served as models for studying virulence, adaptation, and evolution.
+**Background:** Pseudomonas savastanoi pv. fraxini (Psf) is a phytopathogenic bacterium responsible for the formation of distinctive erumpent cankers on European ash (Fraxinus excelsior). It belongs to the P. syringae species complex, a diverse group of plant-associated bacteria that have served as models for studying virulence, adaptation, and evolution.
 
 Although ash canker is widespread across the UK and parts of Europe, the biology and ecology of Psf remain poorly understood. Understanding its population structure and evolutionary mechanisms is particularly important as European ash populations face multiple threats, including ash dieback (Hymenoscyphus fraxineus) and the emerald ash borer (Agrilus planipennis). How these interacting stressors shape Psf populations is currently unknown.
 
