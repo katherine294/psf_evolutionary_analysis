@@ -10,6 +10,6 @@ Although ash canker is widespread across the UK and parts of Europe, the biology
 
 These genomic approaches were integrated with phenotypic assays of ecologically relevant traits, including swarming motility and biosurfactant production, to identify variants associated with adaptive phenotypes. Together, these results reveal patterns of population structure, gene flow, and functional diversification that illuminate the evolutionary ecology of P. savastanoi pv. fraxini. 
 
-### All raw sequencing data and assemblies are accessible from BioProject PRJNA1344481.
+### All raw sequencing data and assemblies will be accessible from BioProject PRJNA1344481.
 
 
