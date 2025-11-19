@@ -9,10 +9,10 @@ module load Biopython/1.79-foss-2021b
 
 set -e
 
-#### MAKE SURE YOUR PSF GENOMES ARE IN THE FASTA INTPUT DIRECTORY ####
-
+#### MAKE SURE YOUR GENOMES ARE IN THE FASTA INTPUT DIRECTORY ####
 # Assign names for the directories
 FASTA_INPUT="full/path/Psf_genomes"
+SCRIPTS="scripts"
 TRIMMED_FASTA="Psf_trimmed_fasta"
 BLAST_DB="blast_database"
 BLAST_OUTPUT="blast_output"
@@ -24,18 +24,16 @@ EXTRACTED_FASTA_DIR="extracted_sequences"
 QUERY="query.fasta" ##### file with the sequence of interest 
 
 # Create directories if they don't exist
-mkdir -p $TRIMMED_FASTA $BLAST_DB $BLAST_OUTPUT $FILTERED_BLAST $TOPHITS_OUTPUT $EXTRACTED_SEQ $BED_FILE $EXTRACTED_FASTA_DIR
+mkdir -p $TRIMMED_FASTA $SCRIPTS $BLAST_DB $BLAST_OUTPUT $FILTERED_BLAST $TOPHITS_OUTPUT $EXTRACTED_SEQ $BED_FILE $EXTRACTED_FASTA_DIR
 
-# make scripts excecutable
+# move scripts to new dir and make excecutable
+mv trimcontig.py blast2bed.sh scripts
 chmod +x scripts/*
 
-### MAKE A TXT FILE WITH THE NAMES OF YOUR PSF GENOMES ###
+### Make text file with basenames of input files ###
 cd $FASTA_INPUT
-
-for file in *.fasta; do base=$(basename $file .fasta); echo "${base}" >> Psf_genomes.txt; done
-
+for file in *.fasta; do base=$(basename $file .fasta); echo "${base}" >> Strains.txt; done
 mv Psf_genomes.txt ../
-
 cd ../
 
 # Loop through strains listed in strains.txt
@@ -48,11 +46,11 @@ echo "Error: FASTA file for strain $strain not found!"
 continue
   fi
 
-# Filter contigs so only >500bp remain using python script
+# Filter contigs so only >500bp remain using python script - could also use seqtk 
 # Usage: trimcontig.py <fasta_file> <output_file>
 scripts/trimcontig.py $FASTA_INPUT/${strain}.fasta $TRIMMED_FASTA/${strain}_trim.fasta
 
-# Make blast database from Psf genome
+# Make blast database from Psf genomes
 makeblastdb -in $TRIMMED_FASTA/${strain}_trim.fasta -parse_seqids -out $BLAST_DB/${strain}_nucl_blastdb -title "${strain}_blastdb" -dbtype nucl
 
 # tblastn to identify protein seq in nucleotide genomes using protein effector query database
@@ -82,5 +80,5 @@ scripts/blast2bed.sh $FILTERED_BLAST/${strain}_filtered.out $BED_FILE/${strain}.
 # Extract subject sequence using coordinates, specify -s so that getfasta runs strand aware
 bedtools getfasta -name -s -fi $FASTA_INPUT/${strain}.fasta -bed $BED_FILE/${strain}.bed -fo $EXTRACTED_SEQ/${strain}_seq_extract.fasta
 
-done < Psf_genomes.txt
+done < Strains.txt
 echo "Processing complete."
