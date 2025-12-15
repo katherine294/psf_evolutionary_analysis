@@ -9,6 +9,8 @@ module load BEDTools/2.30.0-GCC-11.2.0
 
 set -euo pipefail
 
+# FIRST -- Download ISfinder database: https://github.com/thanhleviet/ISfinder-sequences
+
 # Define paths to directories
 GENOME="/rds/homes/k/kgh742/psf_wgs_project/03.ReferenceGenomes/Psv_NCPPB3335/PsvNCPPB3335.fna"
 BLAST_DB="/rds/homes/k/kgh742/psf_wgs_project/03.ReferenceGenomes/ISfinder_blast/ISfinder_blastdb"
@@ -59,7 +61,6 @@ awk 'BEGIN{OFS="\t"}
 }' "$FILTERED_BLASTOUT" > "$FILTERED_BEDFILE"
 
 # Merge bed file using bedtools
-
 bedtools sort -i "$FILTERED_BEDFILE" |
 bedtools merge \
   -d 20 \
