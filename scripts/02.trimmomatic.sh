@@ -36,7 +36,7 @@ fi
 if [ ! -f "$ADAPTOR_SEQ" ]; then
   echo "Adaptor file not found at $ADAPTOR_SEQ" >&2
   echo "Please download it from:"
-  echo "https://github.com/katherine294/genotype-phenotype-paper/blob/main/files/TruSeq2-PE.fa"
+  echo "https://github.com/katherine294/psf_evolutionary_analysis/tree/main/files/TruSeq2-PE.fa"
   exit 1
 fi
 
