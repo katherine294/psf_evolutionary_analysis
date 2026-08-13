@@ -17,7 +17,7 @@ library(tidyverse)
 
 Read in vcf file
 ```{r}
-vcf <- read.vcfR("~/W163a3b1_core_genome_masked.vcf")
+vcf <- read.vcfR("~/Figure1-source-data.vcf")
 
 # Convert vcf to binary data matrix 
 geno <- extract.gt(vcf, element = "GT", as.numeric = TRUE) 
